@@ -1,0 +1,46 @@
+body {
+  font-family: 'PT Mono', monospace;
+  font-size: 13px;
+}
+
+h6 {
+  font-family: 'PT Mono', monospace;
+  font-size: 13px;
+}
+
+h5 {
+  font-family: 'PT Mono', monospace;
+  font-size: 13px;
+}
+
+h4 {
+  font-family: 'PT Mono', monospace;
+  font-size: 13px;
+}
+
+h2 {
+  font-family: 'PT Mono', monospace;
+  font-size: 13px;
+}
+
+h1 {
+  font-family: 'PT Mono', monospace;
+  font-size: 13px;
+}
+
+h3 {
+  font-family: 'PT Mono', monospace;
+  font-size: 10px;
+}
+
+a {
+  color: #2a2b2b
+}    
+
+.navbar {
+    border-bottom: 1px solid #d9d8d5;
+}
+
+footer {
+  margin-top: 40px;
+}
