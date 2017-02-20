@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+	<title>buzatina</title>
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.0/jquery.min.js"></script>
+	<link rel="stylesheet" href="/css/bootstrap.css"/>
+	<link rel="stylesheet" href="/css/style.css"/>
+  <script src="/js/bootstrap.js" type="text/javascript"></script>
+  <script src="/socket.io/socket.io.js"></script>
+</head>
+
+<body style="background-color: #fdfdfd">
+
+    <nav class="navbar" style="padding-top: 0px ;margin-top: 0px;margin-bottom: 0px; margin-left: 0px; width: 100%; background-color: white;">
+          
+          <!-- Logo -->
+          <div class="navbar-header">
+
+          <a href="/" class="btn" style="background-color: black; color: white; padding-left: 15px; padding-right: 15px; margin: 3px;"><b style="font-size: 30px; padding: 0px; margin: 0px;">b</b></a>
+              
+              
+              <button style="color: #1b96fe;" type="button" class="navbar-toggle" data-toggle="collapse" data-target="#myNavbar">
+                <span style="background-color: #1b96fe;" class="icon-bar"></span>
+                <span style="background-color: #1b96fe;" class="icon-bar"></span>
+                <span style="background-color: #1b96fe;" class="icon-bar"></span>
+              </button>
+              <a href="#" class="navbar-left"></a>
+          </div>
+
+          <div class="collapse navbar-collapse" id="myNavbar" style="margin-top: 0px; padding-top: 0px;">
+
+            <ul class="nav navbar-nav navbar-right" style="margin-top: 0px; padding-top: 0px;">
+
+             {{#if user}}
+
+              <li id="login"><a href="/search/search" data-toggle="collapse" data-target="#myNavbar" class="btn" style="background-color: #1b96fe; color: white; margin-top: 5px;">buzaLocal</a></li>
+
+              {{#if user.picUrl}}
+              <li id="settings"><a href="/settings/settings" data-toggle="collapse" data-target="#myNavbar"><img class="img-rounded" style="height: 40px;" src="{{user.picUrl}}"></a></li>
+
+              {{else}}
+
+              <li id="settings"><a href="/settings/settings" data-toggle="collapse" data-target="#myNavbar">Settings</a></li>
+
+              {{/if}}
+
+              <li id="signOut"><a href="/users/logout" data-toggle="collapse" data-target="#myNavbar">Sign Out</a></li>
+
+             {{else}}
+
+              <li id="login"><a href="/users/login" data-toggle="collapse" data-target="#myNavbar">Sign In</a></li>
+              <li id="signUp"><a href="/users/register" class="btn" style="background-color: #1b96fe; color: white;" data-toggle="collapse" data-target="#myNavbar" style="color: white;">Sign Up</a></li>
+
+             {{/if}}
+     
+            </ul>
+
+          </div>
+
+        </div>
+      </nav>
+
+      <div class="row" style="background-color: #fdfdfd">
+        <div class="col-md-3 col-lg-3"></div>
+        <div class="col-xs-12 col-sm-6 col-md-6 col-lg-6">
+
+          {{#if success_msg}}
+            <div class="alert alert-success">{{success_msg}}</div>
+          {{/if}}
+
+          {{#if error_msg}}
+            <div class="alert alert-danger">{{error_msg}}</div>
+          {{/if}}
+
+          {{#if error}}
+            <div class="alert alert-danger">{{error}}</div>
+          {{/if}}                    
+
+          {{{body}}}
+
+        </div>
+      </div>
+
+<!--       <footer class="footer">
+        <p>&copy; 2017 Buzatina Dot Com, Inc.</p>
+      </footer> -->
+
+</body>
+
+</html>
