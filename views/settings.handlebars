@@ -1,0 +1,199 @@
+<div id="loadImg" style="display: none;">
+  <div style="text-align: center;">
+    <span style="text-align: center; font-size: 15px; color: black;"><b>Loading.... Please wait</b></span>
+  </div>  
+</div>
+
+<div class="row" id="main">
+
+    <div class="col-md-3 col-lg-3">
+    <input type="text" value="{{this.user._id}}" style="font-size: 11px; display: none;" class="form-control" id="userId">
+ 
+    </div>
+
+    <div class="col-xs-12 col-sm-6 col-md-6 col-lg-6" style="padding: 10px; margin-left: 10px;">
+
+        <div class="panel panel-default">
+          <div class="panel-heading">
+              <h3 class="panel-title w3-center sans"> Please Select Image Below</h3>
+          </div>
+
+          {{#if user}}
+          <div>
+            <img src="{{this.user.picUrl}}" style="width: 100%;" class="w3-center" id="profilePic">
+          </div>
+
+          {{/if}}
+
+          <div class="loader" style="margin-left: 40%; margin-top: 50px;" ng-show="loading">
+          </div> 
+
+            <div class="panel-body">
+
+              <br>
+
+              <form method="POST" action="/settings/setPicture" enctype="multipart/form-data">
+                  <div class="form-group">
+                    <input type="file" name="fileData" accept="image/*" id="file-chooser" />
+                  </div>
+
+                  <span id="err_file" class="w3-text-blue" style="display: none;"><b>Please select image above..</b></span>
+                  <br>
+                  <span id="loading" style="display: none; color: #1b96fe;"><b>Loading...</b></span>
+                  <br>
+
+                  <input id="imageUpload" class="btn btn-lg btn-block w3-center" style="background-color: #1b96fe; color: white;" value="Save"></input>
+              </form>
+
+            </div>
+
+        </div>
+
+
+        <div class="panel panel-default">
+
+            <div class="panel-heading">
+              <h3 class="panel-title w3-center sans"> Settings </h3>
+            </div>
+
+            <div class="panel-body">
+
+                <table class="table">
+                    <thead>
+                      <tr>
+                        <th></th>
+                        <th></th>
+                      </tr>
+                    </thead>
+                    
+                    <tbody>
+
+                      <tr id="displayLocation">
+                        <td> Check In </td>
+                        <td><button style="color: #1b96fe;" type="button" class="btn btn-lg" id="locationModal"><span class="glyphicon glyphicon-map-marker" aria-hidden="true"></span></button></td>
+                      </tr>
+
+                    </tbody>
+
+                </table>
+
+            </div>
+
+        </div>
+
+      <!-- Location Modal -->
+        <div class="modal fade" id="locationModal2" role="dialog">
+          <div class="modal-dialog">
+          
+            <!-- Modal content-->
+            <div class="modal-content">
+              <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+                <h4 class="modal-title">Please Check In Below</h4>
+              </div>
+              <div class="modal-body">
+ 
+                <form method="POST" action="/settings/checkIn">
+
+                      <div class="form-group">
+                          <input id="latitude" name="latitude" style="display: none;" class="form-control sans" placeholder="Business Name..." type="text"></input>
+                          <input id="longitude" name="longitude" style="display: none;" class="form-control sans" placeholder="Business Name..." type="text"></input>
+                      </div>
+
+                      <input type="submit" class="btn btn-lg btn-block w3-center" style="background-color: #1b96fe; color: white;" value="Check In"></input>
+
+                </form>
+
+              </div>
+              <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+              </div>
+            </div>
+            
+          </div>
+        </div>
+
+    <div class="col-sm-3 col-md-3 col-lg-3 hidden-xs hidden-sm">    
+    </div>
+
+</div>
+
+<script type="text/javascript">
+
+    var socket = io.connect();
+ 
+    $('#imageUpload').click(function(){
+
+      console.log('Button clicked');
+
+      var userId = $('#userId').val();
+
+      var fileChooser = document.getElementById('file-chooser');
+      var file = fileChooser.files[0];
+
+        if (file) {
+
+          socket.emit('pictureEvent', {file: file, userId: $('#userId').val()});
+          $('#main').hide();
+          $('#loadImg').show();
+
+          setTimeout(function() {
+            window.location.assign("/settings/settings");
+          }, 14000);
+
+          
+        } else {
+
+           console.log('Error occurred while setting picture');
+
+        };
+
+    });
+
+  function getLocation() {
+      if (navigator.geolocation) {
+          navigator.geolocation.getCurrentPosition(showPosition);
+              $('#locationModal2').modal({
+                    show: true
+                });
+
+      } else { 
+          x.innerHTML = "Geolocation is not supported by this browser.";
+      }
+  };
+
+  function showPosition(position) {
+    $("#latitude").val(position.coords.latitude);
+    $("#longitude").val(position.coords.longitude);
+  };
+
+    $('#locationModal').click(function(){
+          
+          console.log('Now Call Location API!!');
+          getLocation();
+
+      });
+
+  function callAjaxApi(){
+
+            $.ajax({
+                    type: 'POST',
+                    data: JSON.stringify({nameImage: 'This is the name of the image'}),
+                   /* data: {
+                        blob: {wob:"1",job:"2", ar:[1,2,{a:'b'}]}
+                    },*/
+                    contentType: "application/json",
+                    dataType:'json',
+                    url: '/settings/imageUpload',                      
+                    success: function(data) {
+                        console.log('success');                               
+                    },
+
+                    error: function(error) {
+                        console.log("some error in fetching the notifications");
+                     }
+            });
+
+  };
+
+</script>
