@@ -256,8 +256,7 @@ router.post('/send', function(req, res){
 	            	if (req.body.useridMessage == req.user._id) {
 	            		res.redirect('back');
 	            	} else {
-	            		return res.send();
-		            	sendNotificationMessage(req.user, req.body.toEmail, req.body.message);
+	            		res.redirect('back');
 	            	};
 	            };
 	        }
