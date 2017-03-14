@@ -7,6 +7,8 @@
       {{#each Message.objQ1.Message1}}
 
         <a href="/messages/{{this._id}}"><h4 style="font-size: 13px;"><b>{{this.toName}}</b></h4></a>
+        <a href="/messages/{{this._id}}"><img src="{{this.toPic}}" alt="no image" style="height:45px"></a>
+        
         <hr>
 
       {{/each}}
