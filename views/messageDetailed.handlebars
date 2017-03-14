@@ -10,14 +10,16 @@
 
         {{#if this.me}}
             <div style="border-radius: 5px; border: 1px solid white; background-color: white; margin: 5px; padding: 10px; text-align: left;">
-	        	<h4 style="font-size: 13px;" style="text-align: left;">{{this.message}}</h4>
+	        	<img src="{{this.picMessage}}" alt="no image" style="height:45px">
+			<h4 style="font-size: 13px;" style="text-align: left;">{{this.message}}</h4>
 	        	<h4 style="font-size: 10px; text-align: left;"><b>me</b></h4>            	
             </div>
 	        
         {{else}}
 
 	        <div style="border-radius: 5px; border: 1px solid #ffe500; background-color: #ffe500; margin: 5px; padding: 10px; text-align: right;">
-	        	<h4 style="font-size: 13px; text-align: right;">{{this.message}}</h4>
+	        	<img src="{{this.picMessage}}" alt="no image" style="height:45px">
+			<h4 style="font-size: 13px; text-align: right;">{{this.message}}</h4>
 	        	<h4 style="font-size: 10px; text-align: right;"><b>{{this.name}}</b></h4>
 	        </div>
 
