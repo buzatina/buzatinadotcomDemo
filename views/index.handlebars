@@ -1,0 +1,148 @@
+ {{#if user}}
+
+	<div style="background-color: white; margin-left: 5px; margin-right: 5px; margin-top: 5px; border-radius: 1px; border: 1px solid #d9d8d5; padding: 8px;" class="card1">
+
+    {{#if user.picUrl}}
+
+
+      {{#if user.latitude}}
+
+        <form method="POST" action="/askQuestion" id="askQuestionForm">
+          
+          <div class="form-group">
+                <div class="input-group" style="width: 100%;">
+                  <textarea type="text" class="form-control" placeholder="Ask other entrepreneurs around you a question..." name="question" required style="width: 100%; z-index: 900;"></textarea>
+                  <br>
+                </div>
+          </div>
+          <span class="input-group-btn">
+              <button class="btn" type="submit" style="background-color: #CC1465; color: white;" class="card">buza</button>
+          </span>
+
+        </form>
+
+      {{else}}
+
+        <div style="margin-left: 5px; text-align: center;">
+            <span><a href="/settings/settings"><span style="color: #414141;" id="askQuestion"><b>check in and add a picture</b></span></a> to ask a question to entrepreneurs near you... </span>
+        </div>
+
+      {{/if}}
+
+    {{else}}
+
+        <div style="margin-left: 5px; text-align: center;">
+            <span><a href="/settings/settings"><span style="color: #414141;" id="askQuestion"><b>check in and add a picture</b></span></a> to ask a question to entrepreneurs near you... </span>
+        </div>
+
+    {{/if}}
+	
+  </div>
+
+	<br>
+
+{{#if question}}
+
+  {{#each question}}
+
+    <div style="background-color: white; margin-left: 5px; margin-right: 5px; margin-top: 5px; border-radius: 1px; border: 1px solid #d9d8d5; padding: 8px;" class="card1">
+        <img src="../profile.png" alt="No Image" class="w3-left w3-circle w3-margin-right" style="width:30px">
+        <h4 style="font-size: 13px;"><b>{{this.name}}</b></h4><br>
+        <p style="color: #323232; font-size: 13px;"><a href="/question/{{this._id}}">{{this.question}}?</a></p>
+
+        {{#if comments}}
+        <span data-toggle="collapse" data-target="#{{this._id}}" style="padding-left: 15px;">show comments</span>
+        {{/if}}
+
+        <div id="{{this._id}}" class="collapse" style="margin-top: 10px; margin-left: 0px; margin-right: 0px; background-color: #fcfdfd" >
+     
+         {{#each comments}}
+
+              <div>                  
+                  <img src="{{this.picComment}}" alt="no image" style="height:45px">
+                  <h2 style="font-size: 11px;"><a href="#"><b>{{this.author}}</b></a></h2>
+                  <h4 style="font-size: 11px;">{{this.userComment}}</h4>
+              </div>
+
+         {{/each}}
+
+        </div>
+
+        <form method="POST" action="/comment" id="searchForm">
+          <div class="form-group">
+                <div class="input-group" style="margin-top: 20px; margin-bottom: 20px; width: 100%;">
+                  <input type="text" style="font-size: 11px; width: 100%;" class="form-control" placeholder="comment here..." name="comment" required>
+                  <span class="input-group-btn" style="margin-bottom: 0px; padding-bottom: 0px;">
+                    <button style="background-color: yellow; color: white; margin-top: 0px; display: none; width: 100%;" class="btn btn-default glyphicon glyphicon-send" type="submit"></button>
+                  </span>
+                  <input type="text" value="{{this._id}}" style="font-size: 11px; display: none;" class="form-control" name="idComment">
+                  <input type="text" value="{{this.userid}}" style="font-size: 11px; display: none;" class="form-control" name="useridQuestion">
+                  <input type="text" value="{{this.email}}" style="font-size: 11px; display: none;" class="form-control" name="idEmail">
+
+                </div>
+          </div>
+        </form>
+
+    </div>
+    <br>  
+  
+  {{/each}}
+
+{{/if}}
+
+{{else}}
+
+  <div class="col-md-4 col-lg-4">
+
+     <br>
+     <br>
+     <br>
+    <div style="margin: 15px; background-color: #19DBFF; color: white; text-align: center; font-size: 30px; padding: 15px; border-radius: 1px; border: 1px solid #19DBFF" class="card1">
+      <span class="w3-center">We simplify networking for creative & innovative entrepreneurs </span>
+    </div>
+
+    <div style="margin: 15px; background-color: #CC1465; color: white; text-align: center; font-size: 30px; padding: 15px; border-radius: 1px; border: 1px solid #CC1465" class="card1">
+      <span class="w3-center">connect and engage with others near you </span>
+    </div>    
+
+  </div>
+
+ 
+
+  <div class="col-md-4 col-lg-4">
+
+     <br>
+     <br>
+     <br>
+
+    <div class="card1" style="margin: 10px; padding: 10px; background-color: white;">
+
+        <form method="POST" action="/users/register">
+        <div class="form-group">
+          <label>Name</label>
+          <input type="text" class="form-control" placeholder="Name" name="name" value="{{errBody.name}}" required>
+        </div>
+        <div class="form-group">
+          <label>Username</label>
+          <input type="text" class="form-control" placeholder="Username... you will use this for login" name="username" required>
+        </div>
+        <div class="form-group">
+          <label>Email</label>
+          <input type="email" class="form-control" placeholder="Email" name="email" value="{{errBody.email}}" required>
+        </div> 
+        <div class="form-group">
+          <label>Password</label>
+          <input type="password" class="form-control" placeholder="Password" name="password" required>
+        </div>
+        <div class="form-group">
+          <label>Cornfirm Password</label>
+          <input type="password" class="form-control" placeholder="Password" name="password2" required>
+        </div>
+        <button type="submit" class="btn btn-default" style="background-color: black; color: white;">Join</button>
+      </form>
+
+    </div>
+
+  </div>
+
+{{/if}}
