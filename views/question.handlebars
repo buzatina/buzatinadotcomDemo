@@ -1,0 +1,74 @@
+<br>
+
+{{#if user}}
+
+  {{#if questionDetailed}}
+
+  <div style="background-color: white; margin-left: 5px; margin-right: 5px; margin-top: 5px; border-radius: 1px; border: 1px solid #d9d8d5; padding: 8px;">
+          <img src="{{questionDetailed.picQuestion}}" alt="No Image" class="w3-left w3-circle w3-margin-right" style="width:30px">
+          <h4 style="font-size: 13px;"><b>{{questionDetailed.name}}</b></h4><br>
+          <p style="color: #323232; font-size: 13px;"><a href="/question/{{this._id}}">{{questionDetailed.question}}?</a></p>
+
+          <div id="{{questionDetailed._id}}" style="margin-top: 10px; margin-left: 0px; margin-right: 0px; background-color: #fdfdfd" >
+       
+           {{#each questionDetailed.comments}}
+                   
+                    <img src="{{this.picComment}}" alt="no image" style="height:45px">
+                    <h2 style="font-size: 11px;"><a href="#"><b>{{this.author}}</b></a></h2>
+                    <h4 style="font-size: 11px;">{{this.userComment}}</h4>
+
+           {{/each}}
+
+          </div>
+
+          <form method="POST" action="/comment" id="searchForm">
+            <div class="form-group">
+                  <div class="input-group" style="margin-top: 20px; margin-bottom: 20px; width: 100%;">
+                    <input type="text" style="font-size: 11px; width: 100%;" class="form-control" placeholder="comment here..." name="comment" required>
+                    <span class="input-group-btn" style="margin-bottom: 0px; padding-bottom: 0px;">
+                      <button style="background-color: yellow; color: white; margin-top: 0px; display: none; width: 100%;" class="btn btn-default glyphicon glyphicon-send" type="submit"></button>
+                    </span>
+                    <input type="text" value="{{this._id}}" style="font-size: 11px; display: none;" class="form-control" name="idComment">
+                    <input type="text" value="{{this.userid}}" style="font-size: 11px; display: none;" class="form-control" name="useridQuestion">
+                    <input type="text" value="{{this.email}}" style="font-size: 11px; display: none;" class="form-control" name="idEmail">
+
+                  </div>
+            </div>
+          </form>
+
+      </div>   
+      <br>
+
+  {{/if}}
+
+
+
+{{else}}
+
+  <div style="margin-left: 5px;">
+    <span><a href="/users/login"><span style="color: #ffa400;" id="askQuestion"><b>login</b></span></a>  <b style="color: black"> or </b> <a href="/users/register"><span style="color: #ffa400;" id="askQuestion"><b>sign up</b></span></a> <b style="color: black">to ask and comment on conversations..</b></span>
+  </div>
+  <br>
+
+  <div style="background-color: white; margin-left: 5px; margin-right: 5px; margin-top: 5px; border-radius: 1px; border: 1px solid #d9d8d5; padding: 8px;">
+          <img src="../profile.png" alt="No Image" class="w3-left w3-circle w3-margin-right" style="width:30px">
+          <h4 style="font-size: 13px;"><b>{{questionDetailed.name}}</b></h4><br>
+          <p style="color: #323232; font-size: 13px;"><a href="/question/{{this._id}}">{{questionDetailed.question}}?</a></p>
+
+          <div id="{{questionDetailed._id}}" style="margin-top: 10px; margin-left: 0px; margin-right: 0px; background-color: #fdfdfd" >
+       
+           {{#each questionDetailed.comments}}
+                   
+                    <img src="{{this.picComment}}" alt="no image" style="height:45px">
+                    <h2 style="font-size: 11px;"><a href="#"><b>{{this.author}}</b></a></h2>
+                    <h4 style="font-size: 11px;">{{this.userComment}}</h4>
+
+           {{/each}}
+
+          </div>
+
+  </div>   
+  <br>
+
+{{/if}}
+

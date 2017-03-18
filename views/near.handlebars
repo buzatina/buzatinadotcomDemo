@@ -1,0 +1,85 @@
+<br>
+
+<div class="jumbotron" style="border-radius: 1px; border: 1px solid #FFE500; background-color: #FFE500; color: black; margin-left: 5px; margin-right: 5px; margin-top: 15px;">
+
+	<div style="text-align: center;">
+		<span style="text-align: center; font-size: 15px;"><b>Connect with these entrepreneurs...</b></span>
+	</div>
+
+</div>
+
+{{#if buzaLocalErr}}
+
+ <div style="margin-left: 5px; text-align: center;">
+    <span><a href="/settings/settings"><span style="color: #414141;" id="askQuestion"><b>Add a picture</b></span></a> to message people... </span>
+ </div>
+
+{{else}}
+
+{{#if question}}
+
+  {{#each question}}
+
+      <div class="col-md-5 col-lg-5" style="border-radius: 1px; border: 1px solid #d9d8d5; background-color: white; margin-left: 30px; margin-right: 30px; margin-top: 5px; margin-bottom: 5px;">
+
+        <div style="background-color: white; margin: 5px; padding: 5px;">
+
+            <img src="{{this.picUrl}}" alt="No Image" class="w3-left w3-circle w3-margin-right" style="width:30px">
+
+            <h4 style="font-size: 13px;"><b>{{this.name}}</b></h4>
+
+            <br>
+
+            {{#if this.aboutUs}}
+
+              <p class="btn btn-small" style="font-size: 11px; background-color: #FFE500; color: black; margin: 1px; padding: 1px; width: 100%; height: 100%;"><b>{{this.aboutUs}}</b></p>
+
+            {{else}}
+
+             {{#if this.partnership}}
+
+              <h4 class="btn btn-small" style="font-size: 11px; background-color: #FFE500; color: black; width: 100%;"><b>{{this.partnership}}</b></h4>
+
+             {{/if}}
+
+            {{/if}}
+          
+
+            <br>
+
+        </div>
+
+        <form method="POST" action="/messages/message" id="messageForm">
+          <div class="form-group">
+                <div class="input-group" style="margin-top: 20px; margin-bottom: 20px; width: 100%;">
+                  <input type="text" style="font-size: 11px; width: 100%;" class="form-control" placeholder="message... {{this.name}}" name="message" required>
+                  <span class="input-group-btn" style="margin-bottom: 0px; padding-bottom: 0px;">
+                    <button style="background-color: #FFE500; color: black; margin-top: 0px; width: 100%;" class="btn btn-default messageSent" type="submit">Send Message</button>
+                  </span>
+                  <input type="text" value="{{this._id}}" style="font-size: 11px; display: none;" class="form-control" name="toUser">
+                  <input type="text" value="{{this.email}}" style="font-size: 11px; display: none;" class="form-control" name="toEmail">
+                  <input type="text" value="{{this.picUrl}}" style="font-size: 11px; display: none;" class="form-control" name="toPic">
+                  <input type="text" value="{{this.name}}" style="font-size: 11px; display: none;" class="form-control" name="toName">
+
+                </div>
+          </div>
+        </form>        
+
+      </div> 
+  
+  {{/each}}
+
+{{/if}}
+
+{{/if}}
+
+<script type="text/javascript">
+  
+$(document).ready(function(){
+    $(".messageSent").click(function(){
+        $(this).text('Sent');
+        $(this).css("background-color", "white");
+    });
+});
+
+</script>
