@@ -71,7 +71,7 @@ router.get('/:messageid', function(req, res){
 					};
 				};
 
-				res.render('MessageDetailed', {message: Message});
+				res.render('messageDetailed', {message: Message});
 
 			};
 
