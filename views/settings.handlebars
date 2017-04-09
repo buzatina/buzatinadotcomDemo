@@ -39,7 +39,8 @@
                   <span id="loading" style="display: none; color: #1b96fe;"><b>Loading...</b></span>
                   <br>
 
-                  <input id="imageUpload" class="btn btn-lg btn-block w3-center" style="background-color: black; color: white;" value="Upload"></input>
+                  <input id="imageUpload" class="btn btn-lg btn-block w3-center" style="background-color: #1b96fe; border: none; color: white;" value="Upload"></input>
+
               </form>
 
             </div>
@@ -65,19 +66,9 @@
                     
                     <tbody>
 
-                      <tr id="displayLocation" style="display: none;">
-                        <td style="display: none;"><b>Check In</b> (Helps you engage with people 5km around you...)</td>
-                        <td style="display: none;"><button style="background-color: black; color: white;" type="button" class="btn btn-lg" id="locationModal"><span class="glyphicon glyphicon-map-marker" aria-hidden="true"></span></button></td>
-                      </tr>
-
-                      <tr id="aspiringEntrepreneur">
-                        <td><b>What business do you want to start?</b> (for aspiring entrepreneurs) </td>
-                        <td><button style="background-color: black; color: white;" type="button" class="btn btn-lg" id="aspiringModalOpen"><span class="glyphicon glyphicon-info-sign" aria-hidden="true"></span></button></td>
-                      </tr>
-
-                      <tr id="startUp">
-                        <td><b>Add business details</b> (for startup entrepreneurs) </td>
-                        <td><button style="background-color: black; color: white;" type="button" class="btn btn-lg" id="startupModalOpen"><span class="glyphicon glyphicon-briefcase" aria-hidden="true"></span></button></td>
+                      <tr id="displayLocation">
+                        <td><b>Check In</b> (Helps you engage with people 5km around you...)</td>
+                        <td><button style="background-color: black; color: white;" type="button" class="btn btn-lg" id="locationModal"><span class="glyphicon glyphicon-map-marker" aria-hidden="true"></span></button></td>
                       </tr>
 
                     </tbody>
@@ -88,188 +79,12 @@
 
         </div>
         <br>
-        <br>
-
-      <!-- Aspiring Modal -->
-        <div class="modal fade" id="aspiringModal" role="dialog">
-            <div class="modal-dialog">
-            
-              <!-- Modal content-->
-              <div class="modal-content">
-
-                  <div class="modal-header">
-                    <button type="button" class="close" data-dismiss="modal">&times;</button>
-                    <h4 class="modal-title"> Communicate What Your Dreams Are Below </h4>
-                  </div>
-
-                  <div class="modal-body">
-
-                      <form method="POST" action="/settings/aspiringEntreprener">
-                            
-                            <div class="form-group">
-                            {{#if user.ambition}}
-                                <textarea name="ambition" class="form-control sans" type="text">{{this.user.ambition}}</textarea>
-                            {{else}}
-                                <textarea name="ambition" class="form-control sans" placeholder="What do you want to do... please share only general information about the problem or opportunity" type="text"></textarea>
-                            {{/if}}
-                            </div>
-
-                            <div class="form-group">
-                            {{#if user.partnership}}
-                                <textarea name="partnership" class="form-control sans" type="text" required>{{this.user.partnership}}</textarea>
-                            {{else}}
-                                <textarea name="partnership" class="form-control sans" placeholder="Which kind of partnerships do you want? e.g. I want a mobile developer coz I have an idea for an app" type="text" required></textarea>
-                            {{/if}} 
-                            </div>
-
-                            <input type="submit" class="btn btn-lg btn-block w3-center" style="background-color: black; color: white;" value="Save"></input>
-
-                      </form>
-
-                   </div>
-
-                  <div class="modal-footer">
-                    <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-                  </div>
-
-              </div>
-            <!-- End Modal dialog -->
-            
-          </div>
-
-      </div>
-
-          <!-- Ends modal -->
-
-      <!-- Startup Modal -->
-        <div class="modal fade" id="startUpModal" role="dialog">
-            <div class="modal-dialog">
-            
-              <!-- Modal content-->
-              <div class="modal-content">
-
-                  <div class="modal-header">
-                    <button type="button" class="close" data-dismiss="modal">&times;</button>
-                    <h4 class="modal-title"> Add Business Details Below </h4>
-                  </div>
-
-                  <div class="modal-body">
-
-                      <form method="POST" action="/settings/startupBusiness">
-
-                            <div class="form-group">
-                            {{#if user.bizName}}
-                                <input name="bizName" class="form-control sans" placeholder="Business Name..." type="text" value="{{this.user.bizName}}"></input>
-                            {{else}}
-                                <input name="bizName" class="form-control sans" placeholder="Business Name..." type="text"></input>
-                            {{/if}}
-
-                            </div>
-
-                            <div class="form-group">
-                            {{#if user.aboutUs}}
-                                <textarea name="aboutUs" class="form-control sans" placeholder="What Does Your Business Do?" type="text" required>{{this.user.aboutUs}}</textarea>
-                            {{else}}
-                                <textarea name="aboutUs" class="form-control sans" placeholder="What Does Your Business Do?" type="text" required></textarea>
-                            {{/if}}
-                            </div>
-
-                            <div class="form-group">
-                                  <label>contact Info:</label>
-                                  {{#if user.contactEmail}}
-                                  <input name="contactEmail" class="form-control sans" placeholder="contact email..." type="text" value="{{this.user.contactEmail}}"></input>
-                                  {{else}}
-                                  <input name="contactEmail" class="form-control sans" placeholder="contact email..." type="text"></input>
-                                  {{/if}}
-                                  
-                            </div>
-
-                            <div class="form-group">
-                                  <label>website:</label>
-                                  {{#if user.website}}
-                                  <input name="website" class="form-control sans" placeholder="e.g. www.buzatina.com" type="text" value="{{this.user.website}}"></input>
-                                  {{else}}
-                                  <input name="website" class="form-control sans" placeholder="e.g. www.buzatina.com" type="text"></input>
-                                  {{/if}}
-                            </div>
-
-                            <input type="submit" class="btn btn-lg btn-block w3-center" style="background-color: black; color: white;" value="Save"></input>
-
-                      </form>
-
-                   </div>
-
-                  <div class="modal-footer">
-                    <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-                  </div>
-
-              </div>
-            <!-- End Modal dialog -->
-            
-          </div>
-        </div>
-
-          <!-- Ends modal -->
-
-
-      <!-- Location Modal -->
-        <div class="modal fade" id="locationModal2" role="dialog">
-            <div class="modal-dialog">
-            
-              <!-- Modal content-->
-              <div class="modal-content">
-
-                  <div class="modal-header">
-                    <button type="button" class="close" data-dismiss="modal">&times;</button>
-                    <h4 class="modal-title">Please Check In Below</h4>
-                  </div>
-
-                  <div class="modal-body">
-                      <form method="POST" action="/settings/checkIn">
-
-                            <div class="form-group">
-                                <input id="latitude" name="latitude" style="display: none;" class="form-control sans" placeholder="Business Name..." type="text"></input>
-                                <input id="longitude" name="longitude" style="display: none;" class="form-control sans" placeholder="Business Name..." type="text"></input>
-                            </div>
-
-                            <input type="submit" class="btn btn-lg btn-block w3-center" style="background-color: black; color: white;" value="Check In"></input>
-
-                      </form>
-                   </div>
-
-                  <div class="modal-footer">
-                    <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-                  </div>
-
-              </div>
-            <!-- End Modal dialog -->
-            
-          </div>
-
-          <!-- Ends modal -->
-
 </div>
 <!-- Ends main row -->
 
 <script type="text/javascript">
 
-    var socket = io.connect();
-
-    $('#startupModalOpen').click(function(){
-
-      $('#startUpModal').modal({
-          show: true
-       });
-
-    });
-
-    $('#aspiringModalOpen').click(function(){
-
-      $('#aspiringModal').modal({
-          show: true
-       });
-
-    });    
+    var socket = io.connect();  
 
     $('#imageUpload').click(function(){
 
@@ -299,23 +114,6 @@
 
     });
 
-  function getLocation() {
-      if (navigator.geolocation) {
-          navigator.geolocation.getCurrentPosition(showPosition);
-              $('#locationModal2').modal({
-                    show: true
-                });
-
-      } else { 
-          x.innerHTML = "Geolocation is not supported by this browser.";
-      }
-  };
-
-  function showPosition(position) {
-    $("#latitude").val(position.coords.latitude);
-    $("#longitude").val(position.coords.longitude);
-  };
-
     $('#locationModal').click(function(){
           
       var loadMap = function (id) {
@@ -328,7 +126,7 @@
           map.addLayer(layer);
           map.setView(HELSINKI, 19);
 
-          map.locate({setView: false, watch: true}) /* This will return map so you can do chaining */
+          map.locate({setView: false, watch: true})  This will return map so you can do chaining 
               .on('locationfound', function(e){
 
                 console.log(e.latitude);
@@ -341,7 +139,7 @@
                   console.log(e);
                   alert("Location access denied.");
               });
-      };
+        };
 
         loadMap('map');
 
@@ -361,6 +159,7 @@
                                 console.log("some error in fetching the notifications");
                              }
                     });
+                    
 
           };
 
