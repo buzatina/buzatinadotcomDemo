@@ -10,6 +10,7 @@ var session = require('express-session');
 var passport = require('passport');
 var LocalStrategy = require('passport-local').Strategy;
 
+// connect to mongodb
 var mongoose = require('mongoose');
 var mongo = require('mongodb');
 var uri = process.env.MONGOURI;
@@ -45,20 +46,6 @@ var app = express();
 
 // Set Static Folder
 app.use(express.static(path.join(__dirname, 'public')));
-
-
-//httpsOptions
-
-/*const httpsOptions = {
-  key: fs.readFileSync('key.pem'),
-  cert: fs.readFileSync('server.crt')
-};*/
-
-/*
-const httpsOptions = {
-  key: fs.readFileSync('./key.pem', 'utf8'),
-  cert: fs.readFileSync('./server.crt', 'utf8')
-};*/
 
 // create http server
 var server = require('http').createServer(app);
