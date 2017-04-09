@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>buzatina</title>
+
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+  <link rel="stylesheet" href="https://www.w3schools.com/lib/w3.css">
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+  <script src="/socket.io/socket.io.js"></script>
+  <link href="https://fonts.googleapis.com/css?family=Slabo+27px" rel="stylesheet">
+ 
+  <link rel="stylesheet" href="https://domoritz.github.io/leaflet-locatecontrol/dist/L.Control.Locate.min.css" />
+  <script src="http://cdn.leafletjs.com/leaflet/v0.7.7/leaflet.js"/>
+  <script src="https://domoritz.github.io/leaflet-locatecontrol/dist/L.Control.Locate.min.js" charset="utf-8"></script>
+ 
+  <style type="text/css">
+
+    .selectFont {
+        font-family: 'Slabo 27px', serif;
+    }
+
+    .card {
+        /* Add shadows to create the "card" effect */
+        box-shadow: 0 1px 1px 0 rgba(0,0,0,0.2);
+        transition: 0.3s;
+    }
+
+    .card2 {
+        /* Add shadows to create the "card" effect */
+        box-shadow: 1px 1px 1px 0 rgba(0,0,0,0.2);
+        transition: 0.3s;
+    }
+
+    .card1 {
+        /* Add shadows to create the "card" effect */
+        box-shadow: 0 2px 4px 0 rgba(0,0,0,0.2);
+        transition: 0.3s;
+    }
+
+    /* On mouse-over, add a deeper shadow */
+    .card:hover {
+        box-shadow: 0 2px 2px 0 rgba(0,0,0,0.2);
+    }
+
+    /* On mouse-over, add a deeper shadow */
+    .card:hover1 {
+        box-shadow: 0 2px 4px 0 rgba(0,0,0,0.2);
+    }
+
+    .text-concat {
+      position: relative;
+      display: inline-block;
+      word-wrap: break-word;
+      overflow: hidden;
+      max-height: 3.6em; /* (Number of lines you want visible) * (line-height) */
+      line-height: 1.2em;
+      text-align:justify;
+    }
+
+
+  </style>
+</head>
+
+<body style="background-color: white;" class="selectFont">
+
+    <nav class="navbar w3-top card" style="background-color: white; padding-top: 0px ;margin-top: 0px;margin-bottom: 10px; padding-bottom: 10px; margin-left: 0px; width: 100%; z-index: 950;">
+          
+          <!-- Logo -->
+          <div class="navbar-header">
+                <a href="/" style="background-color: white; color: black; padding-left: 5px; padding-bottom: 5px; margin: 5px; font-weight: 900;"><img src="https://s3-us-west-2.amazonaws.com/buzatina/buzatina+logo.png" style="height: 55px;"></a>
+<!--                 <button style="color: black;" type="button" class="navbar-toggle" data-toggle="collapse" data-target="#myNavbar">
+                  <span style="background-color: black;" class="icon-bar"></span>
+                  <span style="background-color: black;" class="icon-bar"></span>
+                  <span style="background-color: black;" class="icon-bar"></span>
+                </button> -->
+                <a href="#" class="navbar-left"></a>
+          </div>
+
+          <div class="collapse navbar-collapse" style="margin-top: 0px; padding-top: 0px;" id="myNavbar" style="display: none;">
+            <ul class="nav navbar-nav navbar-right" style="margin-top: 0px; padding-top: 0px; color: white;">
+
+          {{#if user}}
+
+              {{#if user.uploader}}
+              <li><button style="background-color: white; color: black; margin-top: 10px;" type="button" class="btn btn-lg card1" data-toggle="modal" data-target="#pinInfo"><span class="glyphicon glyphicon-map-marker"></span> pin site</button></li>
+              {{/if}}
+
+              {{#if user.picUrl}}
+              <li id="settings"><a href="/settings/settings" data-toggle="collapse" data-target="#myNavbar"><img class="img-rounded" style="height: 40px;" src="{{user.picUrl}}"></a></li>
+              {{else}}
+
+              <li id="settings" style="color: #4b4b4b;"><a href="/settings/settings" data-toggle="collapse" data-target="#myNavbar" style="color: #4b4b4b;">Settings</a></li>
+
+              {{/if}}              
+
+          {{else}}
+<!--               <li id="login"><a href="/users/login" data-toggle="collapse" style="margin-top: 7px; color: #4b4b4b;" data-target="#myNavbar"> Sign In</a></li>
+              <li id="signUp"><a href="/users/register" class="btn btn-small card1" style="background-color: #1b96fe; color: white; margin-top: 5px; margin-right: 20px; border-radius: 2px; border: 1px solid #1b96fe; box-shadow: none;" data-toggle="collapse" data-target="#myNavbar"><b>Sign Up</b></a></li> -->
+          {{/if}}
+
+            </ul>
+          </div>
+
+        </div>
+      </nav>
+        
+      {{{body}}}
+
+  <!-- Modal -->
+      <div id="pinInfo" class="modal fade" role="dialog" style="width: 100%;">
+          <div class="modal-dialog">
+
+            <!-- Modal content-->
+            <div class="modal-content">
+                <div class="modal-body">
+                    <form method="POST" action="/askQuestion" id="askQuestionForm">
+                      
+                      <div class="form-group">
+                             
+                            <div class="input-group" style="width: 100%;">
+                              <input name="title" class="form-control sans" placeholder="title..." type="text"></input>
+                              <textarea type="text" class="form-control" placeholder="summary..." name="site" required style="width: 100%;"></textarea>
+                              <input name="urlSource" class="form-control sans" placeholder="url..." type="text"></input>
+                            </div>
+                      </div>
+                      <span class="input-group-btn">
+                          <button class="btn" type="submit" style="background-color: #07253F; color: white" class="card">buza</button>
+                      </span>
+
+                    </form>
+                </div>
+                <div class="modal-footer">
+                  <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                </div>
+            </div>
+
+          </div>
+      </div>       
+
+<script type="text/javascript">
+  
+    $('#locationModal').click(function(){
+
+      console.log('Location something was clicked');
+          
+      var loadMap = function (id) {
+          var HELSINKI = [60.1708, 24.9375];
+          var map = L.map(id);
+          var tile_url = 'http://{s}.tile.osm.org/{z}/{x}/{y}.png';
+          var layer = L.tileLayer(tile_url, {
+              attribution: 'OSM'
+          });
+          map.addLayer(layer);
+          map.setView(HELSINKI, 19);
+
+          map.locate({setView: false, watch: true}) /* This will return map so you can do chaining */
+              .on('locationfound', function(e){
+
+                console.log(e.latitude);
+                console.log(e.longitude);
+
+                setGeo({'latitude': e.latitude, 'longitude': e.longitude});
+ 
+              })
+             .on('locationerror', function(e){
+                  console.log(e);
+                  alert("Location access denied.");
+              });
+      };
+
+        loadMap('map');
+
+        var setGeo =  function (dataGeo){
+
+                    $.ajax({
+                            type: 'POST',
+                            data: JSON.stringify(dataGeo),
+                            contentType: "application/json",
+                            dataType:'json',
+                            url: '/settings/checkIn',                      
+                            success: function(data) {
+                                console.log('success');                               
+                            },
+
+                            error: function(error) {
+                                console.log("some error in fetching the notifications");
+                             }
+                    });
+
+          };
+
+
+      });
+
+</script>
+
+</body>
+
+</html>
