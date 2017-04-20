@@ -19,7 +19,7 @@ router.post('/askQuestion', function(req, res){
 		locationArray.push(Number(req.user.longitude));
 		locationArray.push(Number(req.user.latitude));
 
-		var newSite = new Site({userid: req.user._id, title: req.body.title, site: req.body.site, urlSource: req.body.urlSource, latitude: req.user.latitude, longitude: req.user.longitude, name: req.user.name, email: req.user.email, username: req.user.username, picSite: req.user.picUrl, location: {coordinates: locationArray}});
+		var newSite = new Site({userid: req.user._id, title: req.body.title, content: req.body.content, site: req.body.site, urlSource: req.body.urlSource, latitude: req.user.latitude, longitude: req.user.longitude, name: req.user.name, email: req.user.email, username: req.user.username, picSite: req.user.picUrl, location: {coordinates: locationArray}});
 		newSite.save(function (err) {
 		  if (err) {
 
