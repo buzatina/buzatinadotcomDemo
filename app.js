@@ -32,7 +32,7 @@ db.on('error', function(err){
 });
 
 //...
-var User = require('./models/user');
+var Record = require('./models/records');
 
 // This is for routing
 var routes = require('./routes/index');
@@ -40,6 +40,7 @@ var users = require('./routes/users');
 var search = require('./routes/search');
 var settings = require('./routes/settings');
 var messages = require('./routes/messages');
+var records = require('./routes/records');
 
 // Initialize the app
 var app = express();
@@ -114,96 +115,115 @@ app.use('/users', users);
 app.use('/search', search);
 app.use('/settings', settings);
 app.use('/messages', messages);
+app.use('/records', records);
+
+// What Is the best way 
+var router = express.Router();
+
+//Register Render Page
+router.get('/test', function(req, res){
+  res.render('register');
+});
 
 app.set('port', (process.env.PORT || 3000));
 
+
+
 io.on('connection', function(socket){
+
+  io.emit('news', { will: 'be received by everyone'});
 
   console.log('One Socket Connected');
 
-  socket.on('pictureEvent', function(data){
-    console.log('Picture Event triggred');
+  socket.on('newRecord', function(data){
     setPic(data);
   });
-});
 
-// Set Actual Picture
-var setPic = function(data){
-    
-    var file = data.file;
-    
-    console.log('The file is...');
-    console.log(file);
 
-    var AWS = require('aws-sdk');
-    AWS.config = new AWS.Config();
 
-    AWS.config.accessKeyId = process.env.ACCESSKEY;
-    AWS.config.secretAccessKey = process.env.SECRETKEY;
+  /// UPLOAD FILE METHOD START
+  var setPic = function(data){
 
-    //  Get userid from front side
-       var url;
- 
-       //Upload to S3
-       AWS.config.region = 'us-west-2';
-       var bucketName = 'buzatina';
-       var bucket = new AWS.S3({
+      console.log('set picture method called');
+      
+      var file = data.file;
 
-         params: {
+      var AWS = require('aws-sdk');
+      AWS.config = new AWS.Config();
 
-              Bucket: bucketName
-            }
-          });
+      AWS.config.accessKeyId = process.env.ACCESSKEY;
+      AWS.config.secretAccessKey = process.env.SECRETKEY;
 
-        if (file) {
+      //  Get userid from front side
+         var url;
+   
+         //Upload to S3
+         AWS.config.region = 'us-west-2';
+         var bucketName = 'buzatina';
+         var bucket = new AWS.S3({
 
-            //Object key will be facebook-USERID#/FILE_NAME
+           params: {
 
-            var objKey = 'ProfilePic/' + data.userId;
-
-            var urlPic = 'https://s3-us-west-2.amazonaws.com/buzatina/ProfilePic/'+data.userId;
-
-            var params = {
-
-                Key: objKey,
-
-                ContentType: file.type,
-
-                Body: file
-                
-            };
-
-            bucket.putObject(params, function (err, dataObject) {
-                if (err) {
-                    
-                    console.log('Error uploading pic');
-
-                } else {
-
-                	console.log('Picture Uploaded');
- 
-          				    // Actual Update Method Comes Here
-          					User.update({_id: data.userId}, { $set: {picUrl: urlPic}}, function (err, user){
-
-          					  if (err){
-
-          					  	console.log(err);
-
-          					  } else {
-
-          					    console.log('profile picture was updated');
-
-          					  };
-          					 
-          					});
-
-                }
-
+                Bucket: bucketName
+              }
             });
 
-        } else {
+          if (file) {
 
-            console.log('No file to upload');
+              //Object key will be facebook-USERID#/FILE_NAME
 
-        };
-};
+              // var objKey = 'Lacat/' + data.userId;
+
+              var objKey = 'Lacat/' + data.userid+ data.fileName;
+
+              var urlPic = 'https://s3-us-west-2.amazonaws.com/buzatina/'+objKey;
+
+              var params = {
+
+                  Key: objKey,
+
+                  ContentType: data.actualFileType,
+
+                  Body: file
+                  
+              };
+
+              bucket.putObject(params, function (err, dataObject) {
+                  if (err) {
+                      
+                      console.log('Error uploading pic');
+
+                      console.log(err);
+
+                  } else {
+
+                      console.log('Picture Uploaded');
+     
+                      var newRecord = new Record({userid: data.userid, site: data.site, recordDate: data.recordDate, fileType: data.fileType, condition: data.condition, description: data.description, uploader: data.uploader, fileUrl: urlPic, fileKey: objKey});
+                      newRecord.save(function (err) {
+                        if (err) {
+
+                          console.log(err);
+
+                        } else {
+
+                          console.log('This shit saved in MongoDB');
+
+                        };
+
+                      });
+                      /// end main upload 
+
+                  }
+
+              });
+
+          } else {
+
+              console.log('No file to upload');
+
+          };
+  };
+  /// UPLOAD FILE END
+
+});
