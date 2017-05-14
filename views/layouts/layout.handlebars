@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <title>buzatina</title>
+  <title>Lacat</title>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
@@ -9,12 +9,17 @@
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
   <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
   <script src="/socket.io/socket.io.js"></script>
+  <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.5.0/Chart.bundle.js"></script>
   <link href="https://fonts.googleapis.com/css?family=Crimson+Text" rel="stylesheet">
  
 <!--   <link rel="stylesheet" href="https://domoritz.github.io/leaflet-locatecontrol/dist/L.Control.Locate.min.css" />
   <script src="http://cdn.leafletjs.com/leaflet/v0.7.7/leaflet.js"/>
   <script src="https://domoritz.github.io/leaflet-locatecontrol/dist/L.Control.Locate.min.js" charset="utf-8"></script>
   -->
+
+  <script src="https://code.jquery.com/jquery-3.1.1.slim.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/tether/1.4.0/js/tether.min.js"></script>
+  <script src="https://pingendo.com/assets/bootstrap/bootstrap-4.0.0-alpha.6.min.js"></script>
 
   <style type="text/css">
 
@@ -24,6 +29,7 @@
 
     .buzablue {
         background-color: #0275d8;
+        color: white;
     }
 
     .card {
@@ -54,33 +60,33 @@
         box-shadow: 0 2px 4px 0 rgba(0,0,0,0.2);
     }
 
-    .text-concat {
-      position: relative;
-      display: inline-block;
-      word-wrap: break-word;
-      overflow: hidden;
-      max-height: 3.6em; /* (Number of lines you want visible) * (line-height) */
-      line-height: 1.2em;
-      text-align:justify;
+    .blue {
+        background-color: #0275d8;
+        color: white;
     }
 
+    .bluedark{
+      background-color: #002341;
+      color: white;
+    }
 
   </style>
+
 </head>
 
-<body class="selectFont buzablue">
+<body class="selectFont bluedark">
 
-    <nav class="navbar w3-top buzablue" style="padding-top: 0px ;margin-top: 0px; padding-bottom: 10px; margin-left: 0px; width: 100%; z-index: 950;">
+    <nav class="navbar w3-top bluedark" style="padding-top: 0px ;margin-top: 0px; padding-bottom: 10px; margin-left: 0px; width: 100%; z-index: 950;">
           
           <!-- Logo -->
           <div class="navbar-header">
-<!--                 <a href="/" style="background-color: white; color: black; padding-left: 5px; padding-bottom: 5px; margin: 5px; font-weight: 900;"><img src="https://s3-us-west-2.amazonaws.com/buzatina/buzatina+logo.png" style="height: 55px;"></a> -->
+                <a href="/" style="padding-left: 5px; padding-bottom: 5px; margin: 5px; font-weight: 900;"><img src="https://s3-us-west-2.amazonaws.com/buzatina/lacat/LACAT+LOGO+DARK.png" style="height: 30px;"></a>
 <!--                 <button style="color: black;" type="button" class="navbar-toggle" data-toggle="collapse" data-target="#myNavbar">
                   <span style="background-color: black;" class="icon-bar"></span>
                   <span style="background-color: black;" class="icon-bar"></span>
                   <span style="background-color: black;" class="icon-bar"></span>
-                </button> -->
-<!--                 <a href="#" class="navbar-left"></a> -->
+                </button>
+                <a href="#" class="navbar-left"></a> -->
           </div>
 
           <div class="collapse navbar-collapse" style="margin-top: 0px; padding-top: 0px;" id="myNavbar" style="display: none;">
@@ -145,60 +151,35 @@
           </div>
       </div>       
 
-<script type="text/javascript">
-  
-    $('#locationModal').click(function(){
+<script>
+  var socket = io.connect('https://lacat.herokuapp.com/');
 
-      console.log('Location something was clicked');
-          
-      var loadMap = function (id) {
-          var HELSINKI = [60.1708, 24.9375];
-          var map = L.map(id);
-          var tile_url = 'http://{s}.tile.osm.org/{z}/{x}/{y}.png';
-          var layer = L.tileLayer(tile_url, {
-              attribution: 'OSM'
-          });
-          map.addLayer(layer);
-          map.setView(HELSINKI, 19);
+  $("#recordForm").submit(function(e){
+    
+    e.preventDefault();
 
-          map.locate({setView: false, watch: true}) /* This will return map so you can do chaining */
-              .on('locationfound', function(e){
+    console.log($("#file")[0].files[0]);
+    
+    console.log('The recordForm was clicked boi');
+    
+    var recordData = {file: $("#file")[0].files[0], actualFileType: $("#file")[0].files[0].type, fileName: $("#file")[0].files[0].name, userid: $("#userid").val(), site: $("#site").val(), recordDate: $("#rocordDate").val(), fileType: $("#fileType").val(), condition: $("#condition").val(), uploader: $("#uploader").val() };
+    
+    console.log(recordData);
 
-                console.log(e.latitude);
-                console.log(e.longitude);
+    socket.emit('newRecord', recordData);
 
-                setGeo({'latitude': e.latitude, 'longitude': e.longitude});
- 
-              })
-             .on('locationerror', function(e){
-                  console.log(e);
-                  alert("Location access denied.");
-              });
-      };
+    setTimeout(function() {
+      window.location.assign("https://lacat.herokuapp.com/records")
+    }, 7000);
 
-        loadMap('map');
-
-        var setGeo =  function (dataGeo){
-
-                    $.ajax({
-                            type: 'POST',
-                            data: JSON.stringify(dataGeo),
-                            contentType: "application/json",
-                            dataType:'json',
-                            url: '/settings/checkIn',                      
-                            success: function(data) {
-                                console.log('success');                               
-                            },
-
-                            error: function(error) {
-                                console.log("some error in fetching the notifications");
-                             }
-                    });
-
-          };
+  });
 
 
-      });
+  socket.on('news', function (data) {
+    console.log(data);
+    //socket.emit('my other event', { my: 'data' });
+  });
+
 
 </script>
 
