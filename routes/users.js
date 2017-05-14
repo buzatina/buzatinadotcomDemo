@@ -16,17 +16,18 @@ router.post('/register', function(req, res){
 	
 	var name = req.body.name;
 	var email = req.body.email;
-	var username = req.body.username;
+	var username = req.body.email;
 	var password = req.body.password;
-	var password2 = req.body.password2;
+
+	//var password2 = req.body.password2;
 
 	//validation
 	req.checkBody('name', 'Name is required').notEmpty();
 	req.checkBody('email', 'Email is required').notEmpty();
 	req.checkBody('email', 'Email is not valid').isEmail();
-	req.checkBody('username', 'Username is required').notEmpty();
+	//req.checkBody('username', 'Username is required').notEmpty();
 	req.checkBody('password', 'Password is required').notEmpty();
-	req.checkBody('password2', 'Passwords do not match').equals(req.body.password);
+	//req.checkBody('password2', 'Passwords do not match').equals(req.body.password);
 
 	var locationArray = [Number(-1), Number(1)];
 
@@ -41,10 +42,10 @@ router.post('/register', function(req, res){
 	} else {
 
 		var newUser = new User({
-			name: name,
-			email: email,
-			username: username,
-			password: password,
+			name: req.body.name,
+			email: req.body.email,
+			username: req.body.email,
+			password: req.body.password,
 			location: {type: 'Point', coordinates: [Number(1), Number(-1)] }
 		});
 
@@ -129,9 +130,9 @@ passport.deserializeUser(function(id, done) {
 
 // Do the actual Login
 router.post('/login',
-	passport.authenticate('local', {successRedirect: '/', failureRedirect: '/users/login', failureFlash: true}),
+	passport.authenticate('local', {successRedirect: '/records', failureRedirect: '/users/login', failureFlash: true}),
 	function(req, res){
-		res.redirect('/');
+		res.redirect('/records/');
 	});
 
 // Follow a User
