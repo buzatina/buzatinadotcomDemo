@@ -1,0 +1,43 @@
+<div class="wits-content " style="min-height: 650px; margin-top: 30px;">
+    <div class="row">
+
+        <div class="col-md-3 col-lg-3 sideMenu" style="margin: 0px; padding-top: 20px; min-height: 650px;">
+
+          <div class="list-group" style="margin: 15px;">
+            <a href="#" class="list-group-item buttonClass" style="color: white;">
+              CATEGORIES
+            </a>
+            <a href="/" class="list-group-item sideMenuLinks" style="color: white;">Home <span class="glyphicon glyphicon-home"></span></a>
+            <a href="/books" class="list-group-item sideMenuLinks" style="color: white;">Books </a>
+            <a href="/laptops" class="list-group-item sideMenuLinks" style="color: white;">Laptops</a>
+            <a href="/mobile" class="list-group-item sideMenuLinks" style="color: white;">Mobile <span class="glyphicon glyphicon-phone"></span></a>
+            <a href="/others" class="list-group-item sideMenuLinks" style="color: white;">Others <span class="fa fa-ambulance"></span></a>
+          </div>
+
+        </div>
+
+        <div class="col-md-9 col-lg-9" style="padding-top: 35px; background-color: #fafeff; min-height: 650px;">
+
+        {{#if Products}}
+
+          {{#each Products}}
+
+            <div class="col-md-4 w3-center" style="margin-bottom: 15px;">
+
+              <a href="/product/{{this._id}}"><img src="{{this.productUrl}}"  style="max-height: 130px; margin: 3px;"></a>
+
+              <div class="text-center"><a href="/product/{{this._id}}" style="color: #0092aa;"><b> {{this.title}} </b></a></div>
+
+              <a href="/product/{{this._id}}"><span class="btn" style="color: white; background-color: #0092aa;">Asking: R{{this.askPrice}}</span></a>
+
+            </div>
+
+          {{/each}}
+
+        {{/if}}
+
+        </div>
+
+    </div>
+
+</div>

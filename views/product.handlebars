@@ -1,0 +1,53 @@
+<div class="wits-content " style="min-height: 650px; margin-top: 30px;">
+    <div class="row">
+
+        <div class="col-md-3 col-lg-3 sideMenu" style="margin: 0px; padding-top: 20px; min-height: 650px;">
+
+          <div class="list-group" style="margin: 15px;">
+            <a href="#" class="list-group-item buttonClass" style="color: white;">
+              CATEGORIES
+            </a>
+            <a href="/books" class="list-group-item sideMenuLinks" style="color: white;">Books</a>
+            <a href="/laptops" class="list-group-item sideMenuLinks" style="color: white;">Laptops</a>
+            <a href="/mobile" class="list-group-item sideMenuLinks" style="color: white;">Mobile</a>
+            <a href="/others" class="list-group-item sideMenuLinks" style="color: white;">Others</a>
+          </div>
+
+        </div>
+
+        <div class="col-md-9 col-lg-9" style="padding-top: 35px; background-color: #fafeff; min-height: 650px;">
+
+        {{#if Product}}
+
+            <div class="row" style="height: 300px;" class="sideMenu">
+            
+              <div class="col-md-6 col-lg-6 w3-center">
+                <img src="{{Product.productUrl}}"  style="height: 100%; max-height: 280px;">
+              </div>
+
+              <div class="col-md-6 col-lg-6 w3-left" style="margin-bottom: 15px;">
+
+                <div class="text-left"><a href="/product/{{Product._id}}" style="color: #0092aa;"><b> {{Product.title}} </b></a></div>
+                <div class="text-left"><span style="color: #0092aa;"> {{Product.about}}</span></div>
+                <div class="text-left"><span style="color: #0092aa;"> <b>Varsity</b>: {{Product.varsity}}</span></div>
+                <div class="text-left"><span style="color: #0092aa;"> <b>Campus</b>: {{Product.campus}}</span></div>
+
+                <span class="btn" style="color: white; background-color: #0092aa;">Asking Price: R{{Product.askPrice}} </span>
+                <hr>
+                <span class="btn" style="color: white; background-color: #ff005a;">Make Offer</span>
+
+              </div>
+
+            </div>
+
+
+
+        {{else}}
+
+        {{/if}}
+
+        </div>
+
+    </div>
+
+</div>
