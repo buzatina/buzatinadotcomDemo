@@ -32,15 +32,15 @@ db.on('error', function(err){
 });
 
 //...
-var Record = require('./models/records');
+var Product = require('./models/product');
 
 // This is for routing
-var routes = require('./routes/index');
+var routes = require('./routes/product');
 var users = require('./routes/users');
 var search = require('./routes/search');
 var settings = require('./routes/settings');
 var messages = require('./routes/messages');
-var records = require('./routes/records');
+var products = require('./routes/product');
 
 // Initialize the app
 var app = express();
@@ -106,7 +106,6 @@ app.use(function(req, res, next){
 	res.locals.user = req.user || null;
   userCheck = true;
 	next();
-  
 });
 
 // Is this the actual routing?
@@ -115,7 +114,7 @@ app.use('/users', users);
 app.use('/search', search);
 app.use('/settings', settings);
 app.use('/messages', messages);
-app.use('/records', records);
+app.use('/products', products);
 
 // What Is the best way 
 var router = express.Router();
@@ -127,22 +126,11 @@ router.get('/test', function(req, res){
 
 app.set('port', (process.env.PORT || 3000));
 
-
-
 io.on('connection', function(socket){
-
-  io.emit('news', { will: 'be received by everyone'});
 
   console.log('One Socket Connected');
 
-  socket.on('newRecord', function(data){
-    setPic(data);
-  });
-
-
-
-  /// UPLOAD FILE METHOD START
-  var setPic = function(data){
+  socket.on('newproduct', function(data){
 
       console.log('set picture method called');
       
@@ -174,7 +162,7 @@ io.on('connection', function(socket){
 
               // var objKey = 'Lacat/' + data.userId;
 
-              var objKey = 'Lacat/' + data.userid+ data.fileName;
+              var objKey = 'Bid/' + data.fileName;
 
               var urlPic = 'https://s3-us-west-2.amazonaws.com/buzatina/'+objKey;
 
@@ -199,8 +187,8 @@ io.on('connection', function(socket){
 
                       console.log('Picture Uploaded');
      
-                      var newRecord = new Record({userid: data.userid, site: data.site, recordDate: data.recordDate, fileType: data.fileType, condition: data.condition, description: data.description, uploader: data.uploader, fileUrl: urlPic, fileKey: objKey});
-                      newRecord.save(function (err) {
+                      var newProduct = new Product({title: data.title, varsity: data.varsity, campus: data.campus, about: data.about, askPrice: data.askPrice, category: data.category, productUrl: urlPic, productKey: objKey});
+                      newProduct.save(function (err) {
                         if (err) {
 
                           console.log(err);
@@ -209,9 +197,12 @@ io.on('connection', function(socket){
 
                           console.log('This shit saved in MongoDB');
 
+                          io.emit('saved', { saveMessage: 'this message was saved chief'});
+
                         };
 
                       });
+
                       /// end main upload 
 
                   }
@@ -223,7 +214,10 @@ io.on('connection', function(socket){
               console.log('No file to upload');
 
           };
-  };
+          
   /// UPLOAD FILE END
+
+
+  });
 
 });
