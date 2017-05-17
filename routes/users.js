@@ -130,9 +130,9 @@ passport.deserializeUser(function(id, done) {
 
 // Do the actual Login
 router.post('/login',
-	passport.authenticate('local', {successRedirect: '/records', failureRedirect: '/users/login', failureFlash: true}),
+	passport.authenticate('local', {successRedirect: '/', failureRedirect: '/users/login', failureFlash: true}),
 	function(req, res){
-		res.redirect('/records/');
+		res.redirect('/');
 	});
 
 // Follow a User
