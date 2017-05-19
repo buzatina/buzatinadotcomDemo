@@ -1,4 +1,24 @@
-<div style="padding-top: 50px; margin-top: 0px; min-height: 700px; background-color: white;">
+<div style="padding-top: 50px; margin-top: 0px; min-height: 700px; background-color: #fafafa;">
+
+<!-- {{#if promptRegister}}
+<div class="row">
+  <div class="col-md-3 col-lg-3"></div>
+  <div class="col-md-6 col-lg-6">
+    <div><b> please <a href="/users/register" style="color: #1b96fe;">register</a> to get results around you</b></div>
+  </div>
+  <div class="col-md-3 col-lg-3"></div>
+</div>
+{{/if}} -->
+
+<!-- {{#if promptCheckIn}}
+<div class="row">
+  <div class="col-md-3 col-lg-3"></div>
+  <div class="col-md-6 col-lg-6">
+    <div><b> please <a href="/users/register">register</a> to get results around you</b></div>
+  </div>
+  <div class="col-md-3 col-lg-3"></div>
+</div>
+{{/if}} -->
 
 <div class="row buzablue" style="z-index: 950px;">
     
@@ -16,84 +36,33 @@
     <div class="col-md-3 col-lg-3"></div>
 
 </div>
-
-<div class="row">
-  <div class="col-md-7 col-lg-7">
-    
-  {{#if site}}
-
-    {{#each site}}
-
-    <div class="row">
-
-        <div class="col-md-2 col-lg-2"></div>
-
-        <div class="col-md-9 col-lg-9">
-            <div  style="width: 100%; text-align: left; margin: 5px; margin-bottom: 0px; padding: 5px; color: #3c3c3c;">
-            <a href="{{this.urlSource}}" style="font-size: 20px; color: black; margin: 0px; padding: 0px;">{{this.title}}</a>
-            <div style="margin-top: 0px; margin-bottom: 0px;">
-              <a href="{{this.urlSource}}" style="font-size: 17px; color: #0486f6; margin: 0px; padding: 0px;">{{this.urlSource}}</a>
-            </div>
-            <span class="text-concat" style="margin-right: 5px; margin-top: 0px;">{{this.content}}.</span>
-            </div>
-        </div>
-
-        <div class="col-md-1 col-lg-1">
-        </div>
-
-    </div>
-
-    {{/each}}
-
-  {{/if}}
-
-  </div>
-  <div class="col-md-5 col-lg-5">
-
-    <div class="row card1" style="margin: 10px;">
-
-      <div class="col-md-6 col-lg-6">
-        <div style="height: 170px; margin: 15px; padding: 10px;" class="w3-center">
-          <img src="https://s3-us-west-2.amazonaws.com/buzatina/storeExample/bd863298-3e21-4d29-a60d-88b8c6de9337_1.bd6b0338f479827bc71822a1e37f4ecb.jpeg" style="height: 100%;">
-        </div> 
-      </div>
-
-      <div class="col-md-6 col-lg-6">
-
-
-        <div style="font-size: 20px;">
-           <span style="height: 25px; margin-top: 5px;" class="glyphicon glyphicon-info-sign"></span><b>buylocal.co.za</b>
-        </div> 
-
-        <div>
-          <h6 style="color: #0486f6"><b>Marco Cabin Luggage Bag - 50.8cm</b></h2>
-        </div>
-
-        <div>
-          <h6 style="color: red"><b>R540</b></h6>
-        </div>
-
-        <div>
-          <span class="btn" style="background-color: red; color: white;">Order</span>
-        </div>       
-
-      </div>
-    </div>
-
-    <div class="row card1 w3-center" style="margin: 10px; padding: 5px;">
-        <img src="https://s3-us-west-2.amazonaws.com/buzatina/logo/buzalytics.png" style="height: 30px;">
-        <div>
-          <h6 style="color: #0275d8"><b>This is how many times others around searched for something similar:</b></h6>
-        </div>
-        <div style="width: 75%; margin-left: 20px;" class="w3-center">
-          <canvas id="myChart" width="400" height="400"></canvas>
-        </div>
-    </div>
-
-  </div>
-
-</div>
  
+{{#if site}}
+
+  {{#each site}}
+
+  <div class="row">
+
+      <div class="col-md-3 col-lg-3"></div>
+
+      <div class="col-md-6 col-lg-6">
+          <div  style="width: 100%; text-align: left; margin: 5px; margin-bottom: 0px; padding: 5px; color: #3c3c3c;">
+          <a href="{{this.urlSource}}" style="font-size: 20px; color: black; margin: 0px; padding: 0px;">{{this.title}}</a>
+          <div style="margin-top: 0px; margin-bottom: 0px;">
+            <a href="{{this.urlSource}}" style="font-size: 17px; color: #0486f6; margin: 0px; padding: 0px;">{{this.urlSource}}</a>
+          </div>
+          <span class="text-concat" style="margin-right: 5px; margin-top: 0px;">{{this.content}}.</span>
+          </div>
+      </div>
+
+      <div class="col-md-3 col-lg-3"></div>
+
+  </div>
+
+  {{/each}}
+
+{{/if}}
+
 </div>
 
 <script type="text/javascript">
@@ -105,40 +74,3 @@
     });
 
 </script>
-
-  <script>
-
-      $(document).ready(function(){
-
-
-    var ctx = document.getElementById("myChart").getContext("2d");
-      var myChart = new Chart(ctx, {
-          type: 'bar',
-          data: {
-              labels: ["Hotel", "Motel", "B&B"],
-              datasets: [{
-                  data: [120, 40, 70],
-                  backgroundColor: [
-                            "#0275d8",
-                            "#002341",
-                            "#FFCE56"
-                  ],
-                  label: 'Places to stay for the night',
-                  borderWidth: 1
-              }]
-          },
-              options: {
-                scales: {
-                    yAxes: [{
-                        ticks: {
-                            beginAtZero:true
-                        }
-                    }]
-                },
-                legend: {display: false}
-            }
-      });
-
-      });
-    
-  </script>
