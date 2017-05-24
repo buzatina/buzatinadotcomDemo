@@ -57,6 +57,10 @@ app.set('views', path.join(__dirname, 'views'));
 app.engine('handlebars', exphbs({defaultLayout: 'layout'}));
 app.set('view engine', 'handlebars');
 
+//set proxy access
+app.set('trust proxy', true);
+app.set('trust proxy', 'loopback');
+
 // BodyParser Middleware
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({extended: false}));
