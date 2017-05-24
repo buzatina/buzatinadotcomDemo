@@ -42,6 +42,8 @@ router.post('/askQuestion', function(req, res){
 //Search Around
 router.post('/', function(req, res){
 	
+	console.log(' A post request was made .... someone is looking for information');
+	
 	var site = ""+req.body.site+"";
  
 	if (req.body.longitude){
@@ -70,6 +72,8 @@ router.post('/', function(req, res){
 						}
 
 						if (ads.length > 0) {
+					        
+							console.log('This shit got results');
 
 				        	var objQ = {site: ads};
 
