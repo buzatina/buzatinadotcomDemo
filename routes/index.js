@@ -44,11 +44,13 @@ router.post('/', function(req, res){
 	
 	console.log(' A post request was made .... someone is looking for information');
 	
+	console.log(req.body);
+	
 	var site = ""+req.body.site+"";
  
 	if (req.body.longitude){
 
-
+                                console.log('entered geo algo');
 				var userLatitude = Number(req.body.latitude);
 				var userLongitude = Number(req.body.longitude);
 
@@ -70,6 +72,8 @@ router.post('/', function(req, res){
 							console.log("***Error****"+err)
 
 						}
+			                        
+			                        console.log('got results');
 
 						if (ads.length > 0) {
 					        
@@ -77,9 +81,10 @@ router.post('/', function(req, res){
 
 				        	var objQ = {site: ads};
 
-				            res.render('search', objQ);
+				                  res.render('search', objQ);
 							
 						} else{
+							console.log('No results');
 
 							res.render('noresults');
 						};
@@ -88,7 +93,9 @@ router.post('/', function(req, res){
 					});
 
 	} else {
-
+		
+		console.log('only running a text search');
+ 
 		    /// run only a text search
 			Site.find(
 			    {$text: {$search: site}},
