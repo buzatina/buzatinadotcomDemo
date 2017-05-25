@@ -15,9 +15,9 @@ var mongoose = require('mongoose');
 var mongo = require('mongodb');
 var uri = process.env.MONGOURI;
  
-//mongoose.Promise = global.Promise;
+mongoose.Promise = global.Promise;
 
-//mongoose.set('server', {socketOptions: {keepAlive: 1}});
+mongoose.set('server', {socketOptions: {keepAlive: 1}});
 
 mongoose.connect(uri);
 var db = mongoose.connection;
