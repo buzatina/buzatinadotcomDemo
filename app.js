@@ -45,8 +45,8 @@ app.use(express.static(path.join(__dirname, 'public')));
 
 // create http server
 var server = require('http').createServer(app);
-var io = require('socket.io').listen(server);
-server.listen(process.env.PORT || 3000);
+//var io = require('socket.io').listen(server);
+server.listen(3000);
 
 // Set the View Engine
 app.set('views', path.join(__dirname, 'views'));
@@ -117,15 +117,15 @@ app.use('/messages', messages);
 
 app.set('port', (process.env.PORT || 3000));
 
-io.on('connection', function(socket){
+//io.on('connection', function(socket){
 
-  console.log('One Socket Connected');
+//  console.log('One Socket Connected');
 
-  socket.on('pictureEvent', function(data){
-    console.log('Picture Event triggred');
-    setPic(data);
-  });
-});
+//  socket.on('pictureEvent', function(data){
+//    console.log('Picture Event triggred');
+//    setPic(data);
+//  });
+//});
 
 // Set Actual Picture
 var setPic = function(data){
