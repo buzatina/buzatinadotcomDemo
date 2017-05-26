@@ -46,7 +46,7 @@ app.use(express.static(path.join(__dirname, 'public')));
 // create http server
 var server = require('http').createServer(app);
 //var io = require('socket.io').listen(server);
-server.listen(3000);
+server.listen(2800);
 
 // Set the View Engine
 app.set('views', path.join(__dirname, 'views'));
