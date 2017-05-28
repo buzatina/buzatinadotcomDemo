@@ -115,7 +115,7 @@ app.use('/search', search);
 app.use('/settings', settings);
 app.use('/messages', messages);
 
-app.set('port', (process.env.PORT || 3000));
+app.set('port', (2800));
 
 io.on('connection', function(socket){
 
@@ -137,9 +137,6 @@ var setPic = function(data){
 
     var AWS = require('aws-sdk');
     AWS.config = new AWS.Config();
-
-    AWS.config.accessKeyId = 'AKIAJW3BI36IPRMTLBGA';
-    AWS.config.secretAccessKey = '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';
 
     //  Get userid from front side
        var url;
