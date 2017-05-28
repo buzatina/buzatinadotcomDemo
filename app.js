@@ -50,7 +50,7 @@ app.use(express.static(path.join(__dirname, 'public')));
 // create http server
 var server = require('http').createServer(app);
 var io = require('socket.io').listen(server);
-server.listen(2800);
+server.listen(2700);
 
 // Set the View Engine
 app.set('views', path.join(__dirname, 'views'));
@@ -115,7 +115,7 @@ app.use('/search', search);
 app.use('/settings', settings);
 app.use('/messages', messages);
 
-app.set('port', (2800));
+app.set('port', (2700));
 
 io.on('connection', function(socket){
 
