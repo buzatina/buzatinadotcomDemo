@@ -216,6 +216,7 @@
           });
 
           function getLocation() {
+              $(".collapse").collapse('toggle');
               if (navigator.geolocation) {
                   navigator.geolocation.getCurrentPosition(showPosition);
               } else {
@@ -243,7 +244,7 @@
                $('[data-toggle="popover"]').each(function() {
                     $(this).popover('hide');
                });
-               $(".collapse").collapse('toggle');
+               
 
              };
            
