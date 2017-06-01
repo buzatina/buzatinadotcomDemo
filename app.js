@@ -15,7 +15,7 @@ var favicon = require('serve-favicon');
 var mongoose = require('mongoose');
 var mongo = require('mongodb');
 
-var uri = process.env.MONGOURI;
+var uri = 'mongodb://tebogo:mokgaga19916@ds155920-a0.mlab.com:55920,ds155920-a1.mlab.com:55920/buzatinalive?replicaSet=rs-ds155920';
  
 mongoose.Promise = global.Promise;
 
