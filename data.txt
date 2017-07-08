@@ -1,12 +1,3 @@
-// Sample Data in South Africa
-
-db.searches.insert({useid: '1', name: 'Jozi', username: 'Jozi User', question: 'How to start a company in Johannesburg',
-	location: { type: "Point", coordinates: [ -26.204058, 28.033891 ] }})
-
-db.searches.insert({useid: '1', name: 'Braam', username: 'Braam User', question: 'How to start a company in Braamfontein',
-	location: { type: "Point", coordinates: [ -26.191596, 28.036337 ] }
-})
-
-db.searches.insert({useid: '1', name: 'Cape Town', username: 'Cape Town User', question: 'How to start a company in Cape Town',
-	location: { type: "Point", coordinates: [ -33.924032, 18.421152 ] }
-})
+heroku config:set MONGOURI=mongodb://tebogo:mokgaga19916@ds155920-a0.mlab.com:55920,ds155920-a1.mlab.com:55920/buzatinalive?replicaSet=rs-ds155920
+heroku config:set ACCESSKEY=AKIAJTAHEHCE7ITIOAMA
+heroku config:set SECRETKEY=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
