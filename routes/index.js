@@ -1,163 +1,220 @@
 var express = require('express');
-
 var router = express.Router();
-
-var Site = require('../models/questions');
-
-var Data = require('../models/data');
-
 var user;
+var ObjectID = require('mongodb').ObjectID;
 
-//Get Homepage
 router.get('/', function(req, res){
-
-	console.log('A request has been made for the homepage');
-     res.render('index');
-});
-
-// Add Site;
-router.post('/askQuestion', function(req, res){
-
-		/// start main upload
-		var locationArray = [];
-
-		console.log('We are adding a new site');
-
-		locationArray.push(Number(req.body.longitudeModal));
-		locationArray.push(Number(req.body.latitudeModal));
-
-		var newSite = new Site({title: req.body.title, content: req.body.content, site: req.body.site, urlSource: req.body.urlSource, latitude: Number(req.body.latitudeModal), longitude: Number(req.body.longitudeModal), location: {coordinates: locationArray}});
-			newSite.save(function (err) {
-
-			  if (err) {
-
-			    console.log(err);
-			    res.redirect('/');
-
-			  } else {
-			  	
-			    res.redirect('/');
-
-			  };
-
-			});
-
-			/// end main upload		
+	res.render('index');
 
 });
 
-//Search Around
+// Start Search
 router.post('/', function(req, res){
 
-	console.log(req.body);
-	
-	var site = ""+req.body.site+"";
- 
-	if (req.body.longitudeModal){
+			    // Connect To a Database
+				var MongoClient = require('mongodb').MongoClient
+				 , assert = require('assert');
 
-		        // Confirmation
-		        console.log('Finding information around you {' + req.body.latitudeModal +', ' +req.body.longitudeModal+'}');
+				// Connection URL
+				var url = process.env.MONGOURI;
+				// Use connect method to connect to the Server
+				MongoClient.connect(url, function(err, db){
+				  assert.equal(null, err);
 
-                // Get Location
-				var userLatitude = Number(req.body.latitudeModal);
-				var userLongitude = Number(req.body.longitudeModal);
+		          // Full text search
+				  db.collection('businesses').find({
+								    "$text": {"$search": "" + req.body.query +""}, "loxion": req.body.loxion},
+									{"score": { "$meta": "textScore" }}).sort({score:{"$meta":"textScore"}}).toArray(function(err, businesses){
 
+										if (err) {
 
-				var locationArray = [];
+											console.log(err);
 
-				locationArray.push(Number(req.body.longitudeModal));
-				locationArray.push(Number(req.body.latitudeModal));
+											res.end();
 
-                // Save Data - Search Query
-				var newData = new Data({query: site, latitude: Number(req.body.latitudeModal), longitude: Number(req.body.longitudeModal), location: {coordinates: locationArray}});
-					newData.save(function (err) {
+										} else {
 
-						  if (err) {
+										    res.render('results', {businesses: businesses});
 
-						  } else {
+										}
 
-						  };
+								    });
 
-					});
+				  // End insert single document
 
+			    });
 
-                // Execute search query
-	            Site.find({
-						    "$text": { "$search": site},
-						    "location": {
-						        "$geoWithin": {
-						            "$centerSphere": [[
-						               userLongitude,
-						               userLatitude
-						            ], 20/6378 ]
-						        }
-						    }
-						}, function(err, ads){
+});
+// End Search
 
-						if(err){
+// Start Category Get
+router.get('/category/:category', function(req,res){
 
-							console.log("***Error****"+err)
+			    // Connect To a Database
+				var MongoClient = require('mongodb').MongoClient
+				 , assert = require('assert');
 
-						}
+				// Connection URL
+				var url = process.env.MONGOURI;
+				// Use connect method to connect to the Server
+				MongoClient.connect(url, function(err, db) {
+				  assert.equal(null, err);
 
-						if (ads.length > 0) {
+				  console.log(req.params.category);
 
-				        	var objQ = {site: ads};
-
-				            res.render('search', objQ);
-							
-						} else{
-
-							res.render('noresults');
-						};
+		          // Full text search
+				  db.collection('businesses').find({"category": req.params.category}).toArray(function(err, businesses){
 
 
-					});
+										if (err) {
 
-	} else {
+											console.log(err);
+
+											res.end();
+
+										} else {
 
 
-            // Executing text search only
-            console.log('Executing only a text search');
+										    res.render('results', {businesses: businesses});
 
-		    // run only a text search
-			Site.find(
-			    {$text: {$search: site}},
-			    {score: {$meta: "textScore"}})
-			    .sort({score:{$meta:"textScore"}}
-			)
-			.exec(function(err, results) {
-			    if(!err){
+										}
 
-			    	var objQ;
+								    });
 
-		        	if (results.length > 0) {
+				  // End insert single document
 
-		        		objQ = {site: results};
-		        		res.render('search', objQ);
+			    });
+});
+// End Category Get
 
-		        	} else{
+// Get Biz
+router.get('/biz/:bizid', function(req, res){
 
-		        		res.render('noresults');
+			    // Connect To a Database
+				var MongoClient = require('mongodb').MongoClient
+				 , assert = require('assert');
 
-		        	};
-		 
-		            
+				// Connection URL
+				var url = process.env.MONGOURI;
+				// Use connect method to connect to the Server
+				MongoClient.connect(url, function(err, db) {
+				  assert.equal(null, err);
 
-				}
+		          // biz
+				  db.collection('businesses').find({_id: ObjectID(req.params.bizid)}).toArray(function(err, biz){
 
-				else
-					{
-					    console.log(err);
-					}
+										if (err) {
 
-				});
+											res.end();
 
-			/// End Text Search
+										} else {
 
-	};
+										          // This is going to be an aggregate
+												  db.collection('businesses').find({_id: ObjectID(req.params.bizid)}).toArray(function(err, biz){
 
-   /// The following ends the POST method
+																		if (err) {
+
+																			res.end();
+
+																		} else {
+
+																			console.log(biz);
+
+																		    res.render('biz', {biz: biz});
+
+																		}
+
+																    });
+
+												  // End aggregate
+
+										}
+
+								    });
+
+				  // End insert single document
+
+			    });
+
+});
+// End Get Biz
+
+//Get Homepage
+router.post('/rate', function(req, res){
+
+	console.log('A request has been made for the homepage');
+
+	  // Connect To a Database
+	  var MongoClient = require('mongodb').MongoClient
+	   , assert = require('assert');
+
+	  // Connection URL
+	  var url = process.env.MONGOURI;
+	  // Use connect method to connect to the Server
+	  MongoClient.connect(url, function(err, db){
+	    assert.equal(null, err);
+
+			      // Rate Business
+			    db.collection('ratings').update({rateid: ''+req.body.bizid+req.user._id}, {rateid: ''+req.body.bizid+req.user._id, bizid: req.body.bizid, userid: req.user._id, rating: Number(req.body.rating)}, {upsert: true}, function(err, result){
+			            if (err) {
+
+			              console.log(err);
+			              res.end();
+
+			            } else {
+			              
+			              console.log('Updated Max');
+
+			              getAverage(req.body.bizid);
+
+
+			            };
+
+			          });
+
+
+	      // Get Average
+
+	            var getAverage = function(bizid){
+
+				    db.collection('ratings').aggregate([{ $match : {bizid : bizid} },
+							     {
+							       $group:
+							         {
+							           _id: "$bizid",
+							           avgRating: { $avg: "$rating" },
+							           $count: "numberRated"
+							         }
+							     }
+							   ], function(err, resultComputed){
+								            if (err) {
+
+								              console.log(err);
+
+								            } else {
+								              
+								              saveRating(bizid, resultComputed);
+
+								            };
+
+			          });
+			    };
+
+			          
+                   var saveRating = function(bizid, result){
+
+				      // Update Business Rating
+				    db.collection('businesses').update({_id: ObjectID(bizid)},{avgRating: result.avgRating, numberRated: result.numberRated}, function(err, result){
+				            if (err){
+
+				            } else {
+
+				            };
+
+				          });
+				    };
+
+	    });
 
 });
 
