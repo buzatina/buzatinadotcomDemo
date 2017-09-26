@@ -7,11 +7,9 @@
   <title>viibe</title>
   <meta content="width=device-width, initial-scale=1" name="viewport">
   <meta content="Webflow" name="generator">
-  
   <link href="https://s3-us-west-2.amazonaws.com/buzatina/viibe+css/normalize.css" rel="stylesheet" type="text/css">
   <link href="https://s3-us-west-2.amazonaws.com/buzatina/viibe+css/webflow.css" rel="stylesheet" type="text/css">
   <link href="https://s3-us-west-2.amazonaws.com/buzatina/viibe+css/viibe.webflow.css" rel="stylesheet" type="text/css">
-
   <script src="https://ajax.googleapis.com/ajax/libs/webfont/1.4.7/webfont.js" type="text/javascript"></script>
   <script type="text/javascript">WebFont.load({
   google: {
@@ -33,7 +31,7 @@
 
     <div class="container-logo w-container" style="background-color: #0c1c8c; color: white;">
       
-      <img style="height: 85px;" src="https://s3-us-west-2.amazonaws.com/lacatbucket/styles/viibe+logo.PNG">
+      <img style="height: 85px;" src="https://s3-us-west-2.amazonaws.com/buzatina/viibe+css/viibe+logo.PNG">
 
     </div>
 
@@ -44,11 +42,30 @@
 
   </div>
 
-  <div class="div-featured-events" style="margin-left: 10%; margin-right: 10%;">
-    <div style="min-height: 300px;">
-      <a href="/addevent" class="w-button" style="border-radius: 7px;">Add An Event to our Database</a>
-    </div>
-  </div>
+      <div class="form-block" style="margin: 5px; margin-top: 50px;">
+
+        <form id="recordForm" method="POST" action="/" novalidate>
+ 
+          <label for="name-3">Event Name:</label>
+          <input class="w-input" maxlength="256" name="eventName" id="eventName" placeholder="The name of the event.." required="required" type="text">
+
+          <label for="name-3">Description:</label>
+          <textarea style="width: 100%;" maxlength="256" name="eventDescription" id="eventDescription" placeholder="What is the event about..." required="required" type="text"></textarea>
+
+          <label for="name-3">Line Up:</label>
+          <textarea style="width: 100%;" maxlength="256" name="eventLineUp" id="eventLineUp" placeholder="Who is performing at the event..." required="required" type="text"></textarea>
+
+          <label for="name-3">Date:</label>
+          <input class="w-input" maxlength="256" name="eventDateAndVenue" id="eventDateAndVenue" placeholder="e.g. 06 November 2017" required="required" type="text">
+
+          <label for="name-3">Select File Below:</label>
+          <input class="w-input" maxlength="256" id="file" name="name" placeholder="Enter your name" required="required" type="file">
+
+          <input class="w-button" id="record" type="submit" value="Save Experience">
+
+        </form>
+
+      </div>
   
   <div class="div-footer">
     <div class="w-row">
@@ -63,7 +80,37 @@
   </div>
 
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.2.0/jquery.min.js" type="text/javascript"></script>
-  <script src="https://s3-us-west-2.amazonaws.com/lacatbucket/styles/webflow.js" type="text/javascript"></script>
+  <script src="https://s3-us-west-2.amazonaws.com/buzatina/viibe+css/webflow.js" type="text/javascript"></script>
   <!-- [if lte IE 9]><script src="https://cdnjs.cloudflare.com/ajax/libs/placeholders/3.0.2/placeholders.min.js"></script><![endif] -->
+
+  <script type="text/javascript">
+
+    var socket = io.connect('/eventviibe');
+
+    $("#recordForm").submit(function(e){
+      
+      e.preventDefault();
+      $('#record').val('Please wait');
+      $('#record').prop('disabled', true);
+      
+      console.log('The recordForm was clicked boi');
+      console.log($("#file")[0].files[0]);
+      
+      var recordData = {file: $("#file")[0].files[0], actualFileType: $("#file")[0].files[0].type, fileName: $("#file")[0].files[0].name, eventName: $("#eventName").val(), eventDescription: $("#eventDescription").val(), eventLineUp: $("#eventLineUp").val(), eventDateAndVenue: $("#eventDateAndVenue").val(), fileType: $("#file")[0].files[0].type};
+
+      socket.emit('newEvent', recordData);
+
+  /*    socket.on('uploadedRecord', function (data) {
+
+        console.log('Uploaded');
+
+        window.location.assign("http://localhost:3000/");
+
+      });*/
+
+    });
+
+  </script>
+
 </body>
 </html>
