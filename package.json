@@ -9,7 +9,7 @@
   "author": "Tebogo Ntlatleng",
   "license": "MaxDevelops",
   "dependencies": {
-    "aws-sdk": "^2.80.0",
+    "aws-sdk": "^2.77.0",
     "bcryptjs": "*",
     "body-parser": "*",
     "connect-flash": "*",
@@ -23,7 +23,6 @@
     "passport": "*",
     "passport-http": "*",
     "passport-local": "*",
-    "sendgrid": "^4.7.1",
     "socket.io": "^1.7.2"
   }
 }

@@ -1,6 +1,6 @@
 {
-  "name": "buzatina dot com",
-  "description": "search engine for dynamic pages",
+  "name": "buzatina.com",
+  "description": "We Enable Entrepreneurship",
   "repository": "https://github.com/buzatina/buzatinadotcomDemo.git",
   "logo": "https://s3-us-west-2.amazonaws.com/uploadtebogo/buzatina.JPG",
   "keywords": ["node", "express", "static"],

@@ -11,10 +11,6 @@ var passport = require('passport');
 var LocalStrategy = require('passport-local').Strategy;
 var bcrypt = require('bcryptjs');
 
-// This is for routing
-var routes = require('./routes/index');
-var users = require('./routes/users');
-
 // Initialize the app
 var app = express();
 
@@ -24,7 +20,9 @@ app.use(express.static(path.join(__dirname, 'public')));
 // create http server
 var server = require('http').createServer(app);
 var io = require('socket.io').listen(server);
-server.listen(process.env.PORT || 2715);
+
+//server.listen(process.env.PORT || 3000);
+server.listen(3000);
 
 // Set the View Engine
 app.set('views', path.join(__dirname, 'views'));
@@ -39,18 +37,22 @@ app.use(cookieParser());
 passport.use(new LocalStrategy(
   function(username, password, done) {
 
+    console.log(username);
+    console.log(password);
+
     // Connect To a Database
   var MongoClient = require('mongodb').MongoClient
    , assert = require('assert');
 
   // Connection URL
-  var url = process.env.MONGOURI;
+  var url = 'mongodb://mthunzi:mthunzipassword@ds141464.mlab.com:41464/viibenosql';
   // Use connect method to connect to the Server
   MongoClient.connect(url, function(err, db) {
     assert.equal(null, err);
     console.log("Connected correctly to server");
+    console.log('Max! I am trying to login neh...');
  
-    // Full text search
+    // Process to compare passwords
   db.collection('users').findOne({
 
               username: username
@@ -71,6 +73,8 @@ passport.use(new LocalStrategy(
 
                     if(isMatch){
 
+                      console.log('login worked Max');
+
                       return done(null, user);
                       
                     };
@@ -83,31 +87,34 @@ passport.use(new LocalStrategy(
 
           });
 
-
-    // End insert single document
+    // End retrieving user and comparing passwords
 
     });
 
   }));
 
+  // End local passport login;
+
+// I am guessing this is to create a session?
 passport.serializeUser(function(user, done) {
   done(null, user.username);
 });
 
-passport.deserializeUser(function(id, done){
+// I am guessing this is to destroy a session?
+passport.deserializeUser(function(id, done) {
  
-    // Connect To a Database
+  // Connect To a Database
   var MongoClient = require('mongodb').MongoClient
    , assert = require('assert');
 
   // Connection URL
-  var url = process.env.MONGOURI;
+  var url = 'mongodb://mthunzi:mthunzipassword@ds141464.mlab.com:41464/viibenosql';
   // Use connect method to connect to the Server
   MongoClient.connect(url, function(err, db) {
     assert.equal(null, err);
     console.log("Connected correctly to server");
  
-    // Full text search
+    // Get the user and continue to destroy the session
   db.collection('users').findOne({
 
               username: id
@@ -126,7 +133,7 @@ passport.deserializeUser(function(id, done){
           });
 
 
-    // End insert single document
+    // End user retrieval
 
     });
 
@@ -135,7 +142,7 @@ passport.deserializeUser(function(id, done){
 // Express Session
 app.use(session({
 	secret: 'secret',
-  cookie: { maxAge: 600000000 },
+  cookie: { maxAge: 900000000 },
 	saveUninitialized: true,
 	resave: true
 }));
@@ -144,175 +151,163 @@ app.use(session({
 app.use(passport.initialize());
 app.use(passport.session());
 
-// Express Validator Middleware
-app.use(expressValidator({
-	errorFormatter: function(param, msg, value){
-		var namespace = param.split('.'),
-		root = namespace.shift(),
-		formParam = root;
-
-		while(namespace.length){
-			formParam += '['+namespace.shift()+']';
-		}
-			return {
-				param: formParam,
-				msg: msg,
-				value: value
-			};
-		}
-}));
-
-// Connect Flash
-app.use(flash());
-
 var userCheck = false;
 
 // Global Vars
 app.use(function(req, res, next){
 
-	res.locals.success_msg = req.flash('success_msg');
-	res.locals.error_msg = req.flash('error_msg');
-	res.locals.error = req.flash('error');
 	res.locals.user = req.user || null;
-  userCheck = true;
+    userCheck = true;
 	next();
   
 });
 
-app.post('/users/login', 
-  passport.authenticate('local', { failureRedirect: '/login' }),
+// Login using passport.js
+app.post('/users/login', passport.authenticate('local', {failureRedirect: '/users/login', failureFlash: 'Invalid username or password.'}),
   function(req, res) {
-    res.redirect('/listbiz/list');
+    res.redirect('/addexperience');
 });
 
+// Logout using passport.js
 app.get('/users/logout', function(req, res){
   req.logout();
   res.redirect('/');
 });
 
-// Is this the actual routing?
+// This is for routing
+var routes = require('./routes/index');
+var users = require('./routes/users');
+
 app.use('/', routes);
 app.use('/users', users);
 
-// What Is the best way 
+
+// What does this do? Setup routing for what again?
 var router = express.Router();
 
-app.set('port', (process.env.PORT || 3000));
+app.set('port', (3000));
 
-//List A business
-app.get('/listbiz/list', function(req, res){
-    
-    var sendUser = req.user;
+//Add a profile picture
+app.get('/addevent', function(req, res){
 
-    sendUser.password = '';
+    res.render('addevent');   
 
-    res.render('addlisting', {user: sendUser});
+    var nsp = io.of('/eventviibe');
 
-
-      var nsp = io.of('/'+req.user._id);
       nsp.on('connection', function(socket){
 
-          console.log('One socket connected');
+          console.log('Socket connected successfully');
 
-          var newListingBoolean = true;
+          socket.on('newEvent', function(newExperienceData){
 
-          socket.on('newListing', function(dataBoss){
+          console.log('socket - profile picture received via socket');
 
-            newListingBoolean = false;
+          addNewExperience(newExperienceData);
 
-            list(dataBoss);
-            
+          var eventAddedMethod = function(){
+            socket.emit('eventAddedViibe', 'everyone');
+          };
+
           });
-
-
-        /// UPLOAD FILE METHOD START
-            var list = function(data){
-            
-            var file = data.file;
-
-            var AWS = require('aws-sdk');
-            AWS.config = new AWS.Config();
-
-            AWS.config.accessKeyId = 'AKIAJTAHEHCE7ITIOAMA';
-            AWS.config.secretAccessKey = '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';
-
-            //  Get userid from front side
-               var url;
-         
-               //Upload to S3
-               AWS.config.region = 'us-west-2';
-               var bucketName = 'buzatina';
-               var bucket = new AWS.S3({
-
-                 params: {
-
-                      Bucket: bucketName
-                    }
-
-                  });
-
-                if (file) {
-
-                    var objKey = 'Lacat/' + data.userid+ data.fileName;
-
-                    var urlPic = 'https://s3-us-west-2.amazonaws.com/buzatina/'+objKey;
-
-                    var params = {
-
-                        Key: objKey,
-
-                        ContentType: data.actualFileType,
-
-                        Body: file
-                        
-                    };
-
-                    bucket.putObject(params, function (err, dataObject) {
-                        if (err){
-                            
-                            console.log('Error uploading pic');
-
-                            console.log(err);
-
-                        } else {
-
-                              // Connect To a Database
-                              var MongoClient = require('mongodb').MongoClient
-                               , assert = require('assert');
-
-                              // Connection URL
-                              var url = process.env.MONGOURI;
-                              // Use connect method to connect to the Server
-                              MongoClient.connect(url, function(err, db){
-                                assert.equal(null, err);
-       
-                                  // Add event to the database
-                                db.collection('businesses').insertOne({userid: data.userid, companyName: data.companyName, contactEmail: data.contactEmail, phone: data.phone, loxion: data.loxion, address: data.address, fileType: data.fileType, about: data.about, category: data.category, fileUrl: urlPic, fileKey: objKey}, function(err, result){
-                                        if (err) {
-
-                                          console.log(err);
-
-                                        } else {
-                                          
-                                          socket.emit('Listed', 'everyone');
-
-                                        };
-
-                                      });
-
-                                });
-
-                        }
-
-                    });
-
-                } else {
-
-                    console.log('No file to upload');
-
-                };
-        };
 
       });
   
 });
+
+/// UPLOAD FILE METHOD START
+var addNewExperience = function(data){
+    
+    var file = data.file;
+
+    var AWS = require('aws-sdk');
+    AWS.config = new AWS.Config();
+
+    // PLEASE CHANGE THE KEYS THAT FOLLOW TO MY S3 KEYS
+    AWS.config.accessKeyId = 'process.accessKeyId';
+    AWS.config.secretAccessKey = 'process.secretAccessKeyId';
+
+    //  Get userid from front side
+       var url;
+ 
+       //Upload to S3 - PLEASE CHANGE BUCKET NAME
+       AWS.config.region = 'us-west-2';
+       var bucketName = 'buzatina';
+       var bucket = new AWS.S3({
+
+         params: {
+
+              Bucket: bucketName
+            }
+
+          });
+
+        if (file) {
+
+            var filenamestring = data.fileName +'';
+            var filenameWithOutSpaces = filenamestring.split(' ').join('');
+
+            var objKey = 'VIIBE/' + data.userid+ filenameWithOutSpaces;
+
+            // CHANGE URL PICTURE BOSS
+            var urlPic = 'https://s3-us-west-2.amazonaws.com/buzatina/'+objKey;
+
+            var params = {
+
+                ACL: 'public-read',
+
+                Key: objKey,
+
+                ContentType: data.actualFileType,
+
+                Body: file
+                
+            };
+
+            bucket.putObject(params, function (err, dataObject) {
+                
+                if (err){
+                    
+                    console.log('Error uploading pic');
+
+                    console.log(err);
+
+                } else {
+
+                      // Connect To a Database
+                      var MongoClient = require('mongodb').MongoClient
+                       , assert = require('assert');
+
+                      // Connection URL - CHANGE THE CONNECTION STRING
+                      var url = 'mongodb://mthunzi:mthunzipassword@ds141464.mlab.com:41464/viibenosql';
+                      // Use connect method to connect to the Server
+                      MongoClient.connect(url, function(err, db){
+                        assert.equal(null, err);
+
+                          // Add event to the database
+                        db.collection('events').insertOne({eventName: data.eventName, eventDescription: data.eventDescription, eventLineUp: data.eventLineUp, eventDateAndVenue: data.eventDateAndVenue, dateUploaded: Date(), fileType: data.fileType, experienceDate: data.experienceDate, fileUrl: urlPic, fileKey: objKey}, function(err, result){
+                                if (err) {
+
+                                  console.log(err);
+
+                                } else {
+
+                                  console.log('Uploaded Viibe event successfully boss!!');
+
+                                  eventAddedMethod();
+
+                                };
+
+                              });
+
+                        });
+
+                }
+
+            });
+
+        } else {
+
+            console.log('No file to upload');
+
+        };
+};
