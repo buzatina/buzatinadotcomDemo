@@ -5,13 +5,13 @@ var LocalStrategy = require('passport-local').Strategy;
 var bcrypt = require('bcryptjs');
 
 //Register Render Page
-router.get('/register', function(req, res){
-	res.render('register');
+router.get('/login', function(req, res){
+	res.render('login');
 });
 
 //Register Render Page
-router.get('/login', function(req, res){
-	res.render('login');
+router.get('/register', function(req, res){
+	res.render('register');
 });
 
 //Register POST - register a user
@@ -34,18 +34,18 @@ router.post('/register', function(req, res){
 	 , assert = require('assert');
 
 	// Connection URL
-	var url = process.env.MONGOURI;
+	var url = 'mongodb://andile:Biglacat1@ds135624.mlab.com:35624/lacat';
 	// Use connect method to connect to the Server
 	MongoClient.connect(url, function(err, db) {
 	  assert.equal(null, err);
 	  console.log("Connected correctly to server");
 
-      // Full text search
+      // Add User to users collection
 	  db.collection('users').insertOne({
-				      username: req.body.email,
-				      email: req.body.email,
-				      password: hashpass,
-				      location: {type: 'Point', coordinates: [Number(1), Number(-1)]}
+	  	              name: req.body.name,
+				      username: req.body.username,
+				      email: req.body.username,
+				      password: hashpass
 					}, function(err, result){
 						if (err) {
 
@@ -53,7 +53,7 @@ router.post('/register', function(req, res){
 
 						} else {
 
-							res.redirect('/users/login');
+							console.log(result);
 
 						};
 						

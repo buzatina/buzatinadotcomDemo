@@ -3,219 +3,127 @@ var router = express.Router();
 var user;
 var ObjectID = require('mongodb').ObjectID;
 
-router.get('/', function(req, res){
+// UPLOADER ROOT PAGE
+
+
+/*router.get('/', function(req, res){
 	res.render('index');
+});*/
 
-});
 
-// Start Search
-router.post('/', function(req, res){
+// VIIBE.CO.ZA ACTUAL PAGE
+router.get('/', function(req, res){
 
-			    // Connect To a Database
-				var MongoClient = require('mongodb').MongoClient
-				 , assert = require('assert');
+	    // Connect To a Database
+		var MongoClient = require('mongodb').MongoClient
+		 , assert = require('assert');
 
-				// Connection URL
-				var url = process.env.MONGOURI;
-				// Use connect method to connect to the Server
-				MongoClient.connect(url, function(err, db){
-				  assert.equal(null, err);
+		// Connection URL
+		var url = 'mongodb://mthunzi:mthunzipassword@ds141464.mlab.com:41464/viibenosql';
+		// Use connect method to connect to the Server
+		MongoClient.connect(url, function(err, db) {
+		  assert.equal(null, err);
 
-		          // Full text search
-				  db.collection('businesses').find({
-								    "$text": {"$search": "" + req.body.query +""}, "loxion": req.body.loxion},
-									{"score": { "$meta": "textScore" }}).sort({score:{"$meta":"textScore"}}).toArray(function(err, businesses){
+	      // biz
+		  db.collection('events').find({}).limit(6).toArray(function(err, events){
 
-										if (err) {
+								if (err) {
 
-											console.log(err);
+									res.end();
 
-											res.end();
+								} else {
 
-										} else {
+									console.log(events);
 
-										    res.render('results', {businesses: businesses});
+									res.render('indexevents', {events: events});
 
-										}
+								}
 
-								    });
+						    });
 
-				  // End insert single document
-
-			    });
-
-});
-// End Search
-
-// Start Category Get
-router.get('/category/:category', function(req,res){
-
-			    // Connect To a Database
-				var MongoClient = require('mongodb').MongoClient
-				 , assert = require('assert');
-
-				// Connection URL
-				var url = process.env.MONGOURI;
-				// Use connect method to connect to the Server
-				MongoClient.connect(url, function(err, db) {
-				  assert.equal(null, err);
-
-				  console.log(req.params.category);
-
-		          // Full text search
-				  db.collection('businesses').find({"category": req.params.category}).toArray(function(err, businesses){
-
-
-										if (err) {
-
-											console.log(err);
-
-											res.end();
-
-										} else {
-
-
-										    res.render('results', {businesses: businesses});
-
-										}
-
-								    });
-
-				  // End insert single document
-
-			    });
-});
-// End Category Get
-
-// Get Biz
-router.get('/biz/:bizid', function(req, res){
-
-			    // Connect To a Database
-				var MongoClient = require('mongodb').MongoClient
-				 , assert = require('assert');
-
-				// Connection URL
-				var url = process.env.MONGOURI;
-				// Use connect method to connect to the Server
-				MongoClient.connect(url, function(err, db) {
-				  assert.equal(null, err);
-
-		          // biz
-				  db.collection('businesses').find({_id: ObjectID(req.params.bizid)}).toArray(function(err, biz){
-
-										if (err) {
-
-											res.end();
-
-										} else {
-
-										          // This is going to be an aggregate
-												  db.collection('businesses').find({_id: ObjectID(req.params.bizid)}).toArray(function(err, biz){
-
-																		if (err) {
-
-																			res.end();
-
-																		} else {
-
-																			console.log(biz);
-
-																		    res.render('biz', {biz: biz});
-
-																		}
-
-																    });
-
-												  // End aggregate
-
-										}
-
-								    });
-
-				  // End insert single document
-
-			    });
-
-});
-// End Get Biz
-
-//Get Homepage
-router.post('/rate', function(req, res){
-
-	console.log('A request has been made for the homepage');
-
-	  // Connect To a Database
-	  var MongoClient = require('mongodb').MongoClient
-	   , assert = require('assert');
-
-	  // Connection URL
-	  var url = process.env.MONGOURI;
-	  // Use connect method to connect to the Server
-	  MongoClient.connect(url, function(err, db){
-	    assert.equal(null, err);
-
-			      // Rate Business
-			    db.collection('ratings').update({rateid: ''+req.body.bizid+req.user._id}, {rateid: ''+req.body.bizid+req.user._id, bizid: req.body.bizid, userid: req.user._id, rating: Number(req.body.rating)}, {upsert: true}, function(err, result){
-			            if (err) {
-
-			              console.log(err);
-			              res.end();
-
-			            } else {
-			              
-			              console.log('Updated Max');
-
-			              getAverage(req.body.bizid);
-
-
-			            };
-
-			          });
-
-
-	      // Get Average
-
-	            var getAverage = function(bizid){
-
-				    db.collection('ratings').aggregate([{ $match : {bizid : bizid} },
-							     {
-							       $group:
-							         {
-							           _id: "$bizid",
-							           avgRating: { $avg: "$rating" },
-							           $count: "numberRated"
-							         }
-							     }
-							   ], function(err, resultComputed){
-								            if (err) {
-
-								              console.log(err);
-
-								            } else {
-								              
-								              saveRating(bizid, resultComputed);
-
-								            };
-
-			          });
-			    };
-
-			          
-                   var saveRating = function(bizid, result){
-
-				      // Update Business Rating
-				    db.collection('businesses').update({_id: ObjectID(bizid)},{avgRating: result.avgRating, numberRated: result.numberRated}, function(err, result){
-				            if (err){
-
-				            } else {
-
-				            };
-
-				          });
-				    };
+		  // End insert single document
 
 	    });
 
 });
 
+// Start Search
+router.post('/', function(req,res){
+
+	    // Connect To a Database
+		var MongoClient = require('mongodb').MongoClient
+		 , assert = require('assert');
+
+		// Connection URL
+		var url = 'mongodb://mthunzi:mthunzipassword@ds141464.mlab.com:41464/viibenosql';
+		// Use connect method to connect to the Server
+		MongoClient.connect(url, function(err, db){
+		  assert.equal(null, err);
+
+          // Full text search
+		  db.collection('events').find({
+						    "$text": {"$search": "" + req.body.query +""}},
+							{"score": { "$meta": "textScore" }}).sort({dateUploaded: -1}).toArray(function(err, docs){
+
+								if (err) {
+
+									console.log(err);
+
+									res.end();
+									// Handle error somehow
+
+								} else {
+
+								    res.render('indexevents', {events: docs});
+
+								}
+
+						    });
+
+		  // End insert single document
+
+	    });
+
+});
+
+// End Search
+
+// Get Biz
+router.get('/event/:eventid', function(req,res){
+
+			    // Connect To a Database
+				var MongoClient = require('mongodb').MongoClient
+				 , assert = require('assert');
+
+				// Connection URL
+				var url = 'mongodb://mthunzi:mthunzipassword@ds141464.mlab.com:41464/viibenosql';
+
+				// Use connect method to connect to the Server
+				MongoClient.connect(url, function(err, db) {
+				  assert.equal(null, err);
+
+		          // biz
+				  db.collection('events').find({_id: ObjectID(req.params.eventid)}).toArray(function(err, events){
+
+										if (err) {
+
+											res.end();
+
+										} else {
+
+											console.log('The detailed event is '+events);
+
+											res.render('eventdetailed',  {event: events});
+
+										}
+
+								    });
+
+				  // End insert single document
+
+			    });
+			    
+});
+
+// End Get Biz
 module.exports = router;
