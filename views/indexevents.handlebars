@@ -1,7 +1,6 @@
 <body class="section-main-home">
 
 
-
   <div class="container-search-search" style="background-color: #0c1c8c;">
 
     <br>
@@ -9,7 +8,7 @@
 
     <div class="container-logo w-container" style="background-color: #0c1c8c;">
       
-      <img style="height: 85px;" src="https://s3-us-west-2.amazonaws.com/lacatbucket/styles/viibe+logo.PNG">
+      <img style="max-height: 120px;" src="https://s3-us-west-2.amazonaws.com/lacatbucket/styles/viibe+logo+white+background+correct+size.JPG">
 
       <h3 class="h3-heading-viibe" style="color: white;">Viibe events app is an event listing and ticketing app for Android, iOS, and Microsoft that is focused on all Afrifans (guys and girls in Africa or on their way there!).</h3>
 
@@ -17,73 +16,27 @@
 
     <br>
 
-    <div class="w-form" style="margin-left: 10vw; margin-right: 10vw;">
-
-      <form class="form" data-name="Email Form" method="POST" action="/" novalidate>
-        <input class="input-search-for-an-event w-input" id="query" maxlength="256" name="query" placeholder="Search for events..." type="text">
-        <input class="submit-button w-button" data-wait="..." type="submit" value="Search">
-      </form>
-
-    </div>
-
     <br>
     <br>
 
   </div>
 
-  <div>
-    <h4 class="h4-featued-events">Featured Events</h4>
-  </div>
-
-
-  <div class="div-featured-events" style="min-height: 300px;">
-
-      {{#if events}}
-
-        {{#each events}}
-
-          <a class="link-block-events w-inline-block" href="/event/{{this._id}}">
-            <img class="img-event" sizes="(max-width: 479px) 150px, 200px" src="{{this.fileUrl}}">
-            <h5 class="event-name">{{this.eventName}}</h5>
-            <h6 class="h6-event-description">{{this.eventDateAndVenue}}</h6>
-          </a>
-
-        {{/each}}
-        
-      {{/if}}
-      
-  </div>
+  <img src="images/final poster.jpg" style="width: 100%;">
   
-  <div class="div-footer">
+  <div class="div-footer" style="margin-top: 0px;">
     <div class="w-row">
-      <div class="column-2 w-col w-col-6">
-
-      <a class="link-block w-inline-block" href="https://play.google.com/store/apps/details?id=com.viibe&amp;hl=en">
-        <img height="75" sizes="193.796875px" src="https://s3-us-west-2.amazonaws.com/lacatbucket/styles/get-it-on-google-play.png">
-      </a>
-
-      <p class="footer-we-are-africa">We Are Africa Capital (Pty) Ltd</p>
-
+      <div class="column-2 w-col w-col-6"><a class="link-block w-inline-block" href="https://play.google.com/store/apps/details?id=com.viibe&amp;hl=en"><img height="75" sizes="193.796875px" src="images/get-it-on-google-play.png" srcset="images/get-it-on-google-play-p-500.png 500w, images/get-it-on-google-play.png 646w"></a>
+        <p class="footer-we-are-africa">We Are Africa Capital (Pty) Ltd</p>
       </div>
-
       <div class="w-col w-col-6">
-        <p class="footer-we-are-africa">We currently cover South Africa and will be extending services to Sub-Saharan Africa from 01 May 2017. We cover events in various categories: concerts, gigs, on stage, business, lifestyle, expo and shows, et cetera.</p>
+        <p class="footer-we-are-africa">Get your ticket by downloading our app on Google Play above.</p>
         <p class="footer-we-are-africa">email: mthunzi.ngwenya@weareafrica.net</p>
       </div>
-
     </div>
   </div>
 
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.2.0/jquery.min.js" type="text/javascript"></script>
   <script src="https://s3-us-west-2.amazonaws.com/lacatbucket/styles/webflow.js" type="text/javascript"></script>
   <!-- [if lte IE 9]><script src="https://cdnjs.cloudflare.com/ajax/libs/placeholders/3.0.2/placeholders.min.js"></script><![endif] -->
-
-<script type="text/javascript">
-
-  console.log('{{events}}');
-
-</script>
-
-
 
 </body>
