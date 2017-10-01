@@ -225,6 +225,9 @@ app.set('port', (3000));
 //Add a profile picture
 app.get('/experience/:experienceid', function(req, res){
 
+    var sendUser;
+    sendUser = req.user;
+
     // Connect To a Database
     var MongoClient = require('mongodb').MongoClient
      , assert = require('assert');
