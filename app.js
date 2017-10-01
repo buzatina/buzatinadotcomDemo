@@ -10,6 +10,7 @@ var session = require('express-session');
 var passport = require('passport');
 var LocalStrategy = require('passport-local').Strategy;
 var bcrypt = require('bcryptjs');
+var ObjectID = require('mongodb').ObjectID;
 
 // Initialize the app
 var app = express();
@@ -44,7 +45,7 @@ passport.use(new LocalStrategy(
    , assert = require('assert');
 
   // Connection URL
-  var url = 'mongodb://mthunzi:mthunzipassword@ds141464.mlab.com:41464/viibenosql';
+  var url = 'mongodb://andile:Biglacat1@ds135624.mlab.com:35624/lacat';
   // Use connect method to connect to the Server
   MongoClient.connect(url, function(err, db) {
     assert.equal(null, err);
@@ -107,7 +108,7 @@ passport.deserializeUser(function(id, done) {
    , assert = require('assert');
 
   // Connection URL
-  var url = 'mongodb://mthunzi:mthunzipassword@ds141464.mlab.com:41464/viibenosql';
+  var url = 'mongodb://andile:Biglacat1@ds135624.mlab.com:35624/lacat';
   // Use connect method to connect to the Server
   MongoClient.connect(url, function(err, db) {
     assert.equal(null, err);
@@ -164,7 +165,7 @@ app.use(function(req, res, next){
 // Login using passport.js
 app.post('/users/login', passport.authenticate('local', {failureRedirect: '/users/login', failureFlash: 'Invalid username or password.'}),
   function(req, res) {
-    res.redirect('/addexperience');
+    res.redirect('/experiences');
 });
 
 // Logout using passport.js
@@ -187,50 +188,148 @@ var router = express.Router();
 app.set('port', (3000));
 
 //Add a profile picture
-app.get('/addevent', function(req, res){
+/*app.get('/addexperience', function(req, res){
+    
+    if (req.user) {
 
-    res.render('addevent');   
+      var sendUser = req.user;
+      sendUser.password = ''; 
 
-    var nsp = io.of('/eventviibe');
+    } else{
+
+      res.redirect('/');
+
+    };
+
+    res.render('addexperience', {user: sendUser});
+
+    var nsp = io.of('/'+req.user._id);
 
       nsp.on('connection', function(socket){
 
           console.log('Socket connected successfully');
 
-          socket.on('newEvent', function(newExperienceData){
+          socket.on('newExperience', function(newExperienceData){
 
           console.log('socket - profile picture received via socket');
 
           addNewExperience(newExperienceData);
 
-          var eventAddedMethod = function(){
-            socket.emit('eventAddedViibe', 'everyone');
-          };
-
           });
 
       });
   
+});*/
+
+
+//Add a profile picture
+app.get('/experience/:experienceid', function(req, res){
+
+    // Connect To a Database
+    var MongoClient = require('mongodb').MongoClient
+     , assert = require('assert');
+
+    // Connection URL
+    var url = 'mongodb://andile:Biglacat1@ds135624.mlab.com:35624/lacat';
+    // Use connect method to connect to the Server
+    MongoClient.connect(url, function(err, db) {
+      assert.equal(null, err);
+
+          // biz
+      db.collection('experiences').find({_id: ObjectID(req.params.experienceid)}).limit(15).toArray(function(err, experience){
+
+                    if (err) {
+
+                      res.end();
+
+                    } else {
+
+                      res.render('experience', {experience: experience, user: sendUser});
+
+                    }
+
+                });
+
+      // End insert single document
+
+      });
+    
+
+      var nsp = io.of('/'+req.user._id);
+
+        nsp.on('connection', function(socket){
+
+
+            console.log('Socket connected successfully');
+
+            var comment = true;
+
+            if (comment) {
+
+                comment = false;
+
+                socket.on('commentOnExperience', function(data){
+
+                    // Connect To a Database
+                    var MongoClient = require('mongodb').MongoClient
+                     , assert = require('assert');
+
+                    // Connection URL
+                    var url = 'mongodb://andile:Biglacat1@ds135624.mlab.com:35624/lacat';
+                    // Use connect method to connect to the Server
+                    MongoClient.connect(url, function(err, db){
+                      assert.equal(null, err);
+
+                          // Rate Business
+                            db.collection('experiences').update({_id: ObjectID(req.params.experienceid)}, {$push:  {comments: {commentUser: sendUser.name, liked: data.liked, disliked: data.disliked, suggested: data.suggested}}}, {upsert: true}, function(err, result){
+                                    
+                                    if (err) {
+
+                                      console.log(err);
+                                      socket.emit('commentedOnExperienceDone', 'profileAboutUpdated information');
+
+                                      comment = true;
+
+                                    } else {
+
+                                      comment = true;
+
+                                      socket.emit('commentedOnExperienceDone', 'profileAboutUpdated information');
+
+                                    };
+
+                                });
+
+                      });
+
+                });
+
+            };
+
+            // Add Comment Method
+
+        });
+        
+  
 });
 
 /// UPLOAD FILE METHOD START
-var addNewExperience = function(data){
+/*var addNewExperience = function(data){
     
     var file = data.file;
 
     var AWS = require('aws-sdk');
     AWS.config = new AWS.Config();
 
-    // PLEASE CHANGE THE KEYS THAT FOLLOW TO MY S3 KEYS
-    AWS.config.accessKeyId = 'process.accessKeyId';
-    AWS.config.secretAccessKey = 'process.secretAccessKeyId';
+    AWS.config.accessKeyId = process.env.ACCESSKEY;
+    AWS.config.secretAccessKey = process.env.SECRETKEY;
 
     //  Get userid from front side
        var url;
  
-       //Upload to S3 - PLEASE CHANGE BUCKET NAME
+       //Upload to S3
        AWS.config.region = 'us-west-2';
-       var bucketName = 'buzatina';
+       var bucketName = 'lacatbucket';
        var bucket = new AWS.S3({
 
          params: {
@@ -245,10 +344,9 @@ var addNewExperience = function(data){
             var filenamestring = data.fileName +'';
             var filenameWithOutSpaces = filenamestring.split(' ').join('');
 
-            var objKey = 'VIIBE/' + data.userid+ filenameWithOutSpaces;
+            var objKey = 'IMAGES/' + data.userid+ filenameWithOutSpaces;
 
-            // CHANGE URL PICTURE BOSS
-            var urlPic = 'https://s3-us-west-2.amazonaws.com/buzatina/'+objKey;
+            var urlPic = 'https://s3-us-west-2.amazonaws.com/lacatbucket/'+objKey;
 
             var params = {
 
@@ -276,23 +374,21 @@ var addNewExperience = function(data){
                       var MongoClient = require('mongodb').MongoClient
                        , assert = require('assert');
 
-                      // Connection URL - CHANGE THE CONNECTION STRING
-                      var url = 'mongodb://mthunzi:mthunzipassword@ds141464.mlab.com:41464/viibenosql';
+                      // Connection URL
+                      var url = 'mongodb://andile:Biglacat1@ds135624.mlab.com:35624/lacat';
                       // Use connect method to connect to the Server
                       MongoClient.connect(url, function(err, db){
                         assert.equal(null, err);
 
                           // Add event to the database
-                        db.collection('events').insertOne({eventName: data.eventName, eventDescription: data.eventDescription, eventLineUp: data.eventLineUp, eventDateAndVenue: data.eventDateAndVenue, dateUploaded: Date(), fileType: data.fileType, experienceDate: data.experienceDate, fileUrl: urlPic, fileKey: objKey}, function(err, result){
+                        db.collection('experiences').insertOne({userid: data.userid, date: Date.Now(), uploader: data.uploader, title: data.title, description: data.description, comments: [], fileType: data.fileType, experienceDate: data.experienceDate, fileUrl: urlPic, fileKey: objKey}, function(err, experiences){
                                 if (err) {
 
                                   console.log(err);
 
                                 } else {
-
-                                  console.log('Uploaded Viibe event successfully boss!!');
-
-                                  eventAddedMethod();
+                                  
+                                  socket.emit('Listed',  {experiences: experiences});
 
                                 };
 
@@ -309,4 +405,4 @@ var addNewExperience = function(data){
             console.log('No file to upload');
 
         };
-};
+};*/
