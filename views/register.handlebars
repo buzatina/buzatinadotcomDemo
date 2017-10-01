@@ -4,7 +4,7 @@
       <h1 class="h-logo">Lacat&gt;</h1>
 
       <div class="form-block" style="margin: 5px; margin-top: 50px;">
-        <form method="POST" action="/users/register" id="registerForm" novalidate>
+        <form method="POST" action="/users/register" id="formID" novalidate>
           <label for="name">Name:</label>
           <input class="w-input" data-name="Name" id="name" maxlength="256" name="name" placeholder="Enter your name" type="text" required="required">
           <label for="email">Email:</label>
@@ -12,7 +12,7 @@
           <label for="email-2">Password:</label>
           <input class="w-input" data-name="Email 2" id="email-2" maxlength="256" name="password" placeholder="Enter your password" required="required" type="password">
           <div class="div-block">
-            <input class="submit-button w-button" data-wait="Please wait..." type="submit" value="Register">
+            <input class="submit-button w-button" data-wait="Please wait..." type="submit" id="submitID" value="Register">
           </div>
         </form>
       </div>
@@ -26,5 +26,18 @@
   <div class="section-landscape"><img class="img-landscape" data-ix="new-interaction-5" sizes="100vw" src="images/cowpow-with-kids.jpeg" srcset="images/cowpow-with-kids-p-800.jpeg 800w, images/cowpow-with-kids-p-1080.jpeg 1080w, images/cowpow-with-kids.jpeg 1141w"></div>
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.2.0/jquery.min.js" type="text/javascript"></script>
   <script src="https://s3-us-west-2.amazonaws.com/lacatbucket/js/webflow.js" type="text/javascript"></script>
+
   <!-- [if lte IE 9]><script src="https://cdnjs.cloudflare.com/ajax/libs/placeholders/3.0.2/placeholders.min.js"></script><![endif] -->
+
+  <script type="text/javascript">
+
+    $(document).ready(function(){
+        $("#formID").submit(function(){
+          $('#submitID').prop('disabled', true);
+          $('#submitID').css("background-color", "#d2d2d2");
+        });
+    });
+
+  </script>
+
 </body>

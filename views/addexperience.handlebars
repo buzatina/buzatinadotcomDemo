@@ -57,15 +57,13 @@
 
     socket.emit('newExperience', recordData);
 
-/*    socket.on('uploadedRecord', function (data) {
-
-      console.log('Uploaded');
-
-      window.location.assign("http://localhost:3000/");
-
-    });*/
-
   });
+
+     socket.on('newExperienceUploaded', function (data) {
+
+      alert('Lacat experience added');
+
+    }); 
 
 </script>
 
