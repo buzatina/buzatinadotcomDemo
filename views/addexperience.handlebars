@@ -42,7 +42,7 @@
 
 <script type="text/javascript">
   
-  var socket = io.connect('/'+"{{user._id}}");
+  var socket = io.connect('/lacat');
 
   $("#recordForm").submit(function(e){
     
@@ -62,6 +62,7 @@
      socket.on('newExperienceUploaded', function (data) {
 
       alert('Lacat experience added');
+      window.location.reload();
 
     }); 
 
