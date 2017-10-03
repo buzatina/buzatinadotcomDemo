@@ -94,7 +94,7 @@ router.get('/search', function(req, res){
 
 								} else {
 
-								    res.render('experiences', {experiences: experiences});
+								    res.render('search', {experiences: experiences});
 
 								}
 
@@ -107,7 +107,7 @@ router.get('/search', function(req, res){
 });
 
 // Start Search
-router.post('/', function(req,res){
+router.post('/search', function(req,res){
 
 			    // Connect To a Database
 				var MongoClient = require('mongodb').MongoClient
@@ -133,7 +133,7 @@ router.post('/', function(req,res){
 
 										} else { 
 
-										    res.render('experiences', {experiences: experiences});
+										    res.render('search', {experiences: experiences});
 
 										}
 
