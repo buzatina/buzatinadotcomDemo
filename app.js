@@ -1,4 +1,3 @@
- //Add a profile picture
 const fs = require('fs');
 var express = require('express');
 var path = require('path');
@@ -142,10 +141,10 @@ passport.deserializeUser(function(id, done) {
 
 // Express Session
 app.use(session({
-  secret: 'secret',
+	secret: 'secret',
   cookie: { maxAge: 900000000 },
-  saveUninitialized: true,
-  resave: true
+	saveUninitialized: true,
+	resave: true
 }));
 
 // Passport init
@@ -157,9 +156,9 @@ var userCheck = false;
 // Global Vars
 app.use(function(req, res, next){
 
-  res.locals.user = req.user || null;
+	res.locals.user = req.user || null;
     userCheck = true;
-  next();
+	next();
   
 });
 
@@ -188,128 +187,94 @@ var router = express.Router();
 
 app.set('port', (3000));
 
-var accept = true;
-
 //Add a profile picture
-app.get('/', function(req, res){
+app.get('/experience/:experienceid', function(req, res){
 
-    res.render('addexperience');
+    var sendUser;
+    sendUser = req.user;
 
-    var nsp = io.of('/lacat');
+    var experienceid = req.params.experienceid;
+    console.log(experienceid);
 
-      nsp.on('connection', function(socket){
+    // Connect To a Database
+    var MongoClient = require('mongodb').MongoClient
+     , assert = require('assert');
 
-          console.log('Socket connected successfully');
+    // Connection URL
+    var url = 'mongodb://andile:Biglacat1@ds135624.mlab.com:35624/lacat';
+    // Use connect method to connect to the Server
+    MongoClient.connect(url, function(err, db) {
+      assert.equal(null, err);
 
-          socket.on('newExperience', function(data){
+          // biz
+      db.collection('experiences').find({_id: ObjectID(experienceid)}).limit(15).toArray(function(err, experience){
 
+                    if (err) {
 
-              if (accept) {
-
-                accept = false;
-
-                console.log('socket - profile picture received via socket');
-
-                
-                var file = data.file;
-
-                var AWS = require('aws-sdk');
-                AWS.config = new AWS.Config();
-
-                AWS.config.accessKeyId = process.env.ACCESSKEY;
-                AWS.config.secretAccessKey = process.env.SECRETKEY;
-
-                //  Get userid from front side
-                   var url;
-             
-                   //Upload to S3
-                   AWS.config.region = 'us-west-2';
-                   var bucketName = 'lacatbucket';
-                   var bucket = new AWS.S3({
-
-                     params: {
-
-                          Bucket: bucketName
-                        }
-
-                      });
-
-                    if (file) {
-
-                        var filenamestring = data.fileName +'';
-                        var filenameWithOutSpaces = filenamestring.split(' ').join('');
-
-                        var objKey = 'IMAGES/' + data.userid+ filenameWithOutSpaces;
-
-                        var urlPic = 'https://s3-us-west-2.amazonaws.com/lacatbucket/'+objKey;
-
-                        var params = {
-
-                            ACL: 'public-read',
-
-                            Key: objKey,
-
-                            ContentType: data.actualFileType,
-
-                            Body: file
-                            
-                        };
-
-                        bucket.putObject(params, function (err, dataObject) {
-                            
-                            if (err){
-                                
-                                  socket.emit('newExperienceUploaded');
-                                  accept = true;
-
-                            } else {
-
-                                  // Connect To a Database
-                                  var MongoClient = require('mongodb').MongoClient
-                                   , assert = require('assert');
-
-                                  // Connection URL
-                                  var url = 'mongodb://andile:Biglacat1@ds135624.mlab.com:35624/lacat';
-                                  // Use connect method to connect to the Server
-                                  MongoClient.connect(url, function(err, db){
-                                    assert.equal(null, err);
-
-                                      // Add event to the database
-                                    db.collection('experiences').insertOne({userid: 'lacat user', date: Date(), uploader: 'lacat user', title: data.title, description: data.description, comments: [], fileType: data.fileType, experienceDate: data.experienceDate, fileUrl: urlPic, fileKey: objKey}, function(err, experiences){
-                                            if (err) {
-
-                                              console.log(err);
-                                              accept = true;
-                                              socket.emit('newExperienceUploaded');
-
-                                            } else {
-                                              
-                                              socket.emit('newExperienceUploaded');
-                                              accept = true;
-
-                                            };
-
-                                          });
-
-                                    });
-
-                            }
-
-                        });
+                      res.end();
 
                     } else {
 
-                        console.log('No file to upload');
-                        socket.emit('newExperienceUploaded');
-                        accept = true;
+                      res.render('experience', {experience: experience, user: sendUser});
+
+                    }
+
+                });
+
+      // End insert single document
+
+      });
+    
+
+      var nsp = io.of('/'+req.user._id);
+
+        nsp.on('connection', function(socket){
+
+
+            console.log('Socket connected successfully');
+
+                socket.on('commentOnExperience', function(data){
+
+                    var comment = true;
+
+                    if (comment) {
+
+                      comment = false;
+
+                      // Connect To a Database
+                      var MongoClient = require('mongodb').MongoClient
+                       , assert = require('assert');
+
+                      // Connection URL
+                      var url = 'mongodb://andile:Biglacat1@ds135624.mlab.com:35624/lacat';
+                      // Use connect method to connect to the Server
+                      MongoClient.connect(url, function(err, db){
+                        assert.equal(null, err);
+
+                            // Rate Business
+                              db.collection('experiences').update({_id: ObjectID(experienceid)}, {$push:  {comments: {commentUser: sendUser.name, liked: data.liked, disliked: data.disliked, suggested: data.suggested}}}, {upsert: true}, function(err, result){
+                                      
+                                      if (err) {
+
+                                        console.log(err);
+                                        socket.emit('commentedOnExperienceDone', 'profileAboutUpdated information');
+
+                                      } else {
+
+                                        socket.emit('commentedOnExperienceDone', 'profileAboutUpdated information');
+
+                                      };
+
+                                  });
+
+                        });
 
                     };
 
+                });
 
-              };
+            // Add Comment Method
 
-          });
-
-      });
-  
+        });
+        
 });
