@@ -3,6 +3,43 @@ var router = express.Router();
 var user;
 var ObjectID = require('mongodb').ObjectID;
 
+router.get('/profile', function(req, res){
+	res.render('profile');
+});
+
+router.get('/', function(req, res){
+
+	    // Connect To a Database
+		var MongoClient = require('mongodb').MongoClient
+		 , assert = require('assert');
+
+		// Connection URL
+		var url = 'mongodb://andile:Biglacat1@ds135624.mlab.com:35624/lacat';
+		// Use connect method to connect to the Server
+		MongoClient.connect(url, function(err, db){
+		  assert.equal(null, err);
+
+          // Full text search
+		  db.collection('experiences').find({}).limit(5).toArray(function(err, experiences){
+
+								if (err) {
+
+									res.render('index');
+
+								} else {
+
+								    res.render('index', {experiences: experiences});
+
+								}
+
+						    });
+
+		  // End insert single document
+
+	    });
+
+});
+
 router.get('/experiences', function(req, res){
 
 	    // Connect To a Database
